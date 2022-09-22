@@ -2,21 +2,23 @@
   "name": "api",
   "version": "1.0.0",
   "description": "",
-  "main": "server.ts",
+  "main": "dist/index.js",
   "scripts": {
-    "dev": "export NODE_ENV=development && export PORT=3333 && ts-node-dev server.ts",
-    "build": " tsc -p .",
-    "start": "export NODE_ENV=production && npm run build && ts-node dist/server.js",
-    "lint": "eslint ./src/**/*.ts --fix && eslint ../client/app/**/*.ts --fix"
+    "dev": "export NODE_ENV=development && export PORT=3333 && ts-node-dev ./src/index.ts",
+    "build": "rm -fr ./dist && tsc -p ./src/tsconfig.json",
+    "start": "export NODE_ENV=production && npm run build && ts-node dist/index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@types/express": "^4.17.14",
-    "@types/node": "^18.7.18",
+    "apollo-server-express": "^3.10.2",
     "express": "^4.18.1",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
     "typescript": "^4.8.3"
+  },
+  "devDependencies": {
+    "@types/node": "^18.7.18"
   }
 }
