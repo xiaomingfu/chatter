@@ -2,10 +2,10 @@ import { gql } from "apollo-server-express";
 
 export const typeDefs = gql`
   type Query {
-    user(id: ID!): User!
+    user(id: Int!): User
     channels: [Channel!]!
-    channel(id: ID!): Channel!
-    message(id: ID!): Message!
+    channel(id: Int!): Channel!
+    message(id: Int!): Message!
   }
 
   type Mutation {
@@ -14,11 +14,11 @@ export const typeDefs = gql`
   }
 
   type Subscription {
-    messageCreated(channelID: ID!): Message!
+    messageCreated(channelID: Int!): Message!
   }
 
   type User {
-    id: ID!
+    id: Int!
     name: String!
     email: String!
 
@@ -26,7 +26,7 @@ export const typeDefs = gql`
   }
 
   type Channel {
-    id: ID!
+    id: Int!
     name: String!
     createdAt: String!
 
@@ -35,7 +35,7 @@ export const typeDefs = gql`
   }
 
   type ChannelMember {
-    id: ID!
+    id: Int!
     joinedAt: String!
 
     user: User
@@ -43,7 +43,7 @@ export const typeDefs = gql`
   }
 
   type Message {
-    id: ID!
+    id: Int!
     content: String!
     createdAt: String!
 

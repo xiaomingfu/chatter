@@ -1,13 +1,13 @@
-// @ts-nocheck
+import { Context } from "./server";
+
 export const resolvers = {
   Query: {
-    user: (_: any, { id }: any) => {
-      return {
-        id,
-        name: "user",
-        email: "a@gmail.com",
-        channels: [],
-      };
+    user: (_: any, { id }: { id: number }, context: Context) => {
+      return context.prisma.user.findUnique({
+        where: {
+          id,
+        },
+      });
     },
   },
 
