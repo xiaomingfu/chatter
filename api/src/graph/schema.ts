@@ -11,6 +11,7 @@ export const typeDefs = gql`
   type Mutation {
     createMessage(content: String!): Message!
     createChannel(name: String!): Channel!
+    addUserToChannel(channelId: Int!, userId: Int!): ChannelMember!
   }
 
   type Subscription {

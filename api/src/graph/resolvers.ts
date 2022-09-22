@@ -11,7 +11,27 @@ export const resolvers = {
     },
   },
 
-  Mutation: {},
+  Mutation: {
+    createChannel: (_: any, { name }: { name: string }, context: Context) => {
+      return context.prisma.channel.create({
+        data: {
+          name,
+        },
+      });
+    },
+    addUserToChannel: (
+      _: any,
+      { channelId, userId }: { channelId: number; userId: number },
+      context: Context
+    ) => {
+      return context.prisma.channelMember.create({
+        data: {
+          memberId: userId,
+          channelId,
+        },
+      });
+    },
+  },
   User: {
     channels: () => [
       {
