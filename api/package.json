@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
+  "prisma": {
+    "seed": "ts-node src/prisma/seed.ts"
+  },
   "scripts": {
     "dev": "export NODE_ENV=development && export PORT=3333 && ts-node-dev ./src/index.ts",
     "build": "rm -fr ./dist && tsc -p ./src/tsconfig.json",
