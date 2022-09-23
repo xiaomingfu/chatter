@@ -2,16 +2,16 @@ import { gql } from "apollo-server-express";
 
 export const typeDefs = gql`
   type Query {
-    user(id: Int!): User
-    channels: [Channel!]!
-    channel(id: Int!): Channel!
-    message(id: Int!): Message!
+    user(id: String!): User!
+    privateChannel(id: String!): PrivateChannel!
+    privateChannelFromUsers(userId1: String!, userId2: String!): PrivateChannel!
+    message(id: String!): Message!
   }
 
   type Mutation {
-    createMessage(content: String!): Message!
-    createChannel(name: String!): Channel!
-    addUserToChannel(channelId: Int!, userId: Int!): ChannelMember!
+    createPrivateChannel(toUserId: String!): PrivateChannel!
+    acceptPrivateChannel(privateChannelId: String!): PrivateChannel!
+    createMessage(content: String!, privateChannelId: String!): Message!
   }
 
   type Subscription {
@@ -19,36 +19,30 @@ export const typeDefs = gql`
   }
 
   type User {
-    id: Int!
+    id: String!
     name: String!
     email: String!
 
-    channels: [Channel!]!
+    privateChannels: [PrivateChannel!]!
   }
 
-  type Channel {
-    id: Int!
-    name: String!
-    createdAt: String!
+  type PrivateChannel {
+    id: String!
 
-    members: [ChannelMember!]!
+    fromUser: User!
+    toUser: User!
+
+    isAccepted: Boolean!
     messages: [Message!]!
   }
 
-  type ChannelMember {
-    id: Int!
-    joinedAt: String!
-
-    user: User
-    channel: Channel
-  }
-
   type Message {
-    id: Int!
+    id: String!
     content: String!
-    createdAt: String!
 
-    sender: User!
-    channel: Channel!
+    creator: User!
+    privateChannel: PrivateChannel!
+
+    createdAt: String!
   }
 `;

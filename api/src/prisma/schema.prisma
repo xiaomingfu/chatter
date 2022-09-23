@@ -11,39 +11,50 @@ datasource db {
 }
 
 model User {
-  id       Int       @id @default(autoincrement())
-  name     String
-  email    String    @unique
+  id    String @id @default(cuid())
+  name  String
+  email String @unique
+
+  messages                Message[]
+  fromUserPrivateChannels PrivateChannel[] @relation("fromUser")
+  toUserPrivateChannels   PrivateChannel[] @relation("toUser")
+
+  @@index([email])
+}
+
+model PrivateChannel {
+  id String @id @default(cuid())
+
+  fromUser   User   @relation("fromUser", fields: [fromUserId], references: [id])
+  fromUserId String
+
+  toUser   User   @relation("toUser", fields: [toUserId], references: [id])
+  toUserId String
+
+  fromUserReadAt DateTime?
+  toUserReadAt   DateTime?
+
+  isAccepted Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
   messages Message[]
 
-  channelMembers ChannelMember[]
-}
-
-model Channel {
-  id   Int    @id @default(autoincrement())
-  name String
-
-  messages       Message[]
-  channelMembers ChannelMember[]
-}
-
-model ChannelMember {
-  id Int @id @default(autoincrement())
-
-  member   User @relation(fields: [memberId], references: [id])
-  memberId Int
-
-  channel   Channel @relation(fields: [channelId], references: [id])
-  channelId Int
+  @@unique([fromUserId, toUserId])
+  @@index([fromUserId, toUserId, updatedAt])
 }
 
 model Message {
-  id      Int    @id @default(autoincrement())
+  id      String @id @default(cuid())
   content String
 
-  sender   User @relation(fields: [senderId], references: [id])
-  senderId Int
+  creator       User   @relation(fields: [creatorUserId], references: [id])
+  creatorUserId String
 
-  channel   Channel @relation(fields: [channelId], references: [id])
-  channelId Int
+  privateChannel   PrivateChannel @relation(fields: [privateChannelId], references: [id])
+  privateChannelId String
+
+  createdAt DateTime @default(now())
+
+  @@index([privateChannelId, createdAt])
 }

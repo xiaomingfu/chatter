@@ -7,6 +7,9 @@ import { resolvers } from "./resolvers";
 export interface Context {
   token: string;
   prisma: PrismaClient;
+  currentUser: {
+    id: string;
+  };
 }
 
 const prisma = new PrismaClient();
@@ -18,7 +21,13 @@ export function createApolloServer() {
     cache: "bounded",
     context: ({ req }): Context => {
       const token = req.headers.authorization || "";
-      return { token, prisma };
+      return {
+        token,
+        prisma,
+        currentUser: {
+          id: "cl8e0k4zv00002ijltgmynjs3",
+        },
+      };
     },
   });
   return server;
