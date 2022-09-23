@@ -3,24 +3,40 @@ import { Context } from "./server";
 
 export const resolvers = {
   Query: {
-    user: (_: any, { id }: { id: string }, context: Context) => {
-      return context.prisma.user.findUnique({
+    publicProfile: async (
+      _: any,
+      { userId }: { userId: string },
+      ctx: Context
+    ) => {
+      const user = await ctx.prisma.user.findUnique({
         where: {
-          id,
+          id: userId,
+        },
+        select: {
+          id: true,
+          name: true,
+        },
+      });
+
+      return user;
+    },
+    user: (_: any, __: any, ctx: Context) => {
+      return ctx.prisma.user.findUnique({
+        where: {
+          id: ctx.currentUser.id,
         },
       });
     },
   },
-
   Mutation: {
     createPrivateChannel: (
       _: any,
       { toUserId }: { toUserId: string },
-      context: Context
+      ctx: Context
     ) => {
-      return context.prisma.privateChannel.create({
+      return ctx.prisma.privateChannel.create({
         data: {
-          fromUserId: context.currentUser.id,
+          fromUserId: ctx.currentUser.id,
           toUserId,
         },
       });
@@ -28,9 +44,9 @@ export const resolvers = {
     acceptPrivateChannel: async (
       _: any,
       { privateChannelId }: { privateChannelId: string },
-      context: Context
+      ctx: Context
     ) => {
-      const channel = await context.prisma.privateChannel.findUnique({
+      const channel = await ctx.prisma.privateChannel.findUnique({
         where: {
           id: privateChannelId,
         },
@@ -40,11 +56,11 @@ export const resolvers = {
         throw new Error("Channel not found");
       }
 
-      if (channel.toUserId !== context.currentUser.id) {
+      if (channel.toUserId !== ctx.currentUser.id) {
         throw new Error("Not authorized");
       }
 
-      return await context.prisma.privateChannel.update({
+      return await ctx.prisma.privateChannel.update({
         where: {
           id: privateChannelId,
         },
@@ -59,9 +75,9 @@ export const resolvers = {
         content,
         privateChannelId,
       }: { content: string; privateChannelId: string },
-      context: Context
+      ctx: Context
     ) => {
-      const channel = await context.prisma.privateChannel.findUnique({
+      const channel = await ctx.prisma.privateChannel.findUnique({
         where: {
           id: privateChannelId,
         },
@@ -72,8 +88,8 @@ export const resolvers = {
       }
 
       if (
-        channel.fromUserId !== context.currentUser.id &&
-        channel.toUserId !== context.currentUser.id
+        channel.fromUserId !== ctx.currentUser.id &&
+        channel.toUserId !== ctx.currentUser.id
       ) {
         throw new Error("Not authorized");
       }
@@ -82,11 +98,11 @@ export const resolvers = {
         throw new Error("Channel not accepted yet");
       }
 
-      return await context.prisma.message.create({
+      return await ctx.prisma.message.create({
         data: {
           content,
           privateChannelId,
-          creatorUserId: context.currentUser.id,
+          creatorUserId: ctx.currentUser.id,
         },
       });
     },

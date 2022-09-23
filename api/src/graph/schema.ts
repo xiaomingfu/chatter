@@ -2,10 +2,8 @@ import { gql } from "apollo-server-express";
 
 export const typeDefs = gql`
   type Query {
-    user(id: String!): User!
-    privateChannel(id: String!): PrivateChannel!
-    privateChannelFromUsers(userId1: String!, userId2: String!): PrivateChannel!
-    message(id: String!): Message!
+    publicProfile(userId: String!): PublicProfile!
+    user: User!
   }
 
   type Mutation {
@@ -16,6 +14,11 @@ export const typeDefs = gql`
 
   type Subscription {
     messageCreated(channelID: Int!): Message!
+  }
+
+  type PublicProfile {
+    id: String!
+    name: String!
   }
 
   type User {
