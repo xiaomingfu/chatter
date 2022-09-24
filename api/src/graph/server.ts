@@ -5,7 +5,6 @@ import { typeDefs } from "./schema";
 import { resolvers } from "./resolvers";
 
 export interface Context {
-  token: string;
   prisma: PrismaClient;
   currentUser: {
     id: string;
@@ -20,15 +19,20 @@ export function createApolloServer() {
     resolvers,
     cache: "bounded",
     context: ({ req }): Context => {
-      const token = req.headers.authorization || "";
       return {
-        token,
         prisma,
         currentUser: {
-          id: "cl8e0k4zv00002ijltgmynjs3",
+          id: convertToString(req.headers.token),
         },
       };
     },
   });
   return server;
+}
+
+function convertToString(value: string | string[] | null | undefined): string {
+  if (Array.isArray(value)) {
+    return value[0];
+  }
+  return value || "";
 }

@@ -11,50 +11,52 @@ datasource db {
 }
 
 model User {
-  id    String @id @default(cuid())
-  name  String
-  email String @unique
+  id        String  @id @default(cuid())
+  email     String  @unique
+  name      String
+  avatarUrl String?
+  company   String?
+  title     String?
 
-  messages                Message[]
-  fromUserPrivateChannels PrivateChannel[] @relation("fromUser")
-  toUserPrivateChannels   PrivateChannel[] @relation("toUser")
+  messages       Message[]
+  conversations1 Conversation[] @relation("user1")
+  conversations2 Conversation[] @relation("user2")
 
   @@index([email])
 }
 
-model PrivateChannel {
+model Conversation {
   id String @id @default(cuid())
 
-  fromUser   User   @relation("fromUser", fields: [fromUserId], references: [id])
-  fromUserId String
+  user1   User   @relation("user1", fields: [user1Id], references: [id])
+  user1Id String
 
-  toUser   User   @relation("toUser", fields: [toUserId], references: [id])
-  toUserId String
+  user2   User   @relation("user2", fields: [user2Id], references: [id])
+  user2Id String
 
-  fromUserReadAt DateTime?
-  toUserReadAt   DateTime?
+  user1UnreadCount Int @default(0)
+  user2UnreadCount Int @default(0)
 
-  isAccepted Boolean  @default(false)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   messages Message[]
 
-  @@unique([fromUserId, toUserId])
-  @@index([fromUserId, toUserId, updatedAt])
+  @@unique([user1Id, user2Id])
+  @@index([user1Id, user2Id, updatedAt])
 }
 
 model Message {
   id      String @id @default(cuid())
   content String
 
-  creator       User   @relation(fields: [creatorUserId], references: [id])
-  creatorUserId String
+  sender   User   @relation(fields: [senderId], references: [id])
+  senderId String
 
-  privateChannel   PrivateChannel @relation(fields: [privateChannelId], references: [id])
-  privateChannelId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  conversationId String
 
   createdAt DateTime @default(now())
 
-  @@index([privateChannelId, createdAt])
+  @@index([conversationId, createdAt])
 }

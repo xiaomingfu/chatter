@@ -3,23 +3,6 @@ import { Context } from "./server";
 
 export const resolvers = {
   Query: {
-    publicProfile: async (
-      _: any,
-      { userId }: { userId: string },
-      ctx: Context
-    ) => {
-      const user = await ctx.prisma.user.findUnique({
-        where: {
-          id: userId,
-        },
-        select: {
-          id: true,
-          name: true,
-        },
-      });
-
-      return user;
-    },
     user: (_: any, __: any, ctx: Context) => {
       return ctx.prisma.user.findUnique({
         where: {
@@ -27,137 +10,130 @@ export const resolvers = {
         },
       });
     },
+    userProfile: async (
+      _: any,
+      { userId }: { userId: string },
+      ctx: Context
+    ) => {
+      const profile = await ctx.prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+        select: {
+          id: true,
+          name: true,
+          avatarUrl: true,
+          company: true,
+          title: true,
+        },
+      });
+
+      return profile;
+    },
+    allUserProfiles: async (_: any, __: any, ctx: Context) => {
+      const profiles = await ctx.prisma.user.findMany({
+        select: {
+          id: true,
+          name: true,
+          avatarUrl: true,
+          company: true,
+          title: true,
+        },
+      });
+
+      console.log(ctx.currentUser);
+
+      return profiles.filter((profile) => profile.id !== ctx.currentUser.id);
+    },
   },
   Mutation: {
-    createPrivateChannel: (
+    startConversation: async (
       _: any,
-      { toUserId }: { toUserId: string },
+      { otherUserId }: { otherUserId: string },
       ctx: Context
     ) => {
-      return ctx.prisma.privateChannel.create({
+      return await ctx.prisma.conversation.create({
         data: {
-          fromUserId: ctx.currentUser.id,
-          toUserId,
+          user1Id: ctx.currentUser.id,
+          user2Id: otherUserId,
         },
       });
     },
-    acceptPrivateChannel: async (
+    sendMessage: async (
       _: any,
-      { privateChannelId }: { privateChannelId: string },
+      { content, conversationId }: { content: string; conversationId: string },
       ctx: Context
     ) => {
-      const channel = await ctx.prisma.privateChannel.findUnique({
+      const conv = await ctx.prisma.conversation.findUnique({
         where: {
-          id: privateChannelId,
+          id: conversationId,
         },
       });
 
-      if (!channel) {
-        throw new Error("Channel not found");
-      }
-
-      if (channel.toUserId !== ctx.currentUser.id) {
-        throw new Error("Not authorized");
-      }
-
-      return await ctx.prisma.privateChannel.update({
-        where: {
-          id: privateChannelId,
-        },
-        data: {
-          isAccepted: true,
-        },
-      });
-    },
-    createMessage: async (
-      _: any,
-      {
-        content,
-        privateChannelId,
-      }: { content: string; privateChannelId: string },
-      ctx: Context
-    ) => {
-      const channel = await ctx.prisma.privateChannel.findUnique({
-        where: {
-          id: privateChannelId,
-        },
-      });
-
-      if (!channel) {
-        throw new Error("Channel not found");
+      if (!conv) {
+        throw new Error("Conversation not found");
       }
 
       if (
-        channel.fromUserId !== ctx.currentUser.id &&
-        channel.toUserId !== ctx.currentUser.id
+        conv.user1Id !== ctx.currentUser.id &&
+        conv.user2Id !== ctx.currentUser.id
       ) {
         throw new Error("Not authorized");
-      }
-
-      if (!channel.isAccepted) {
-        throw new Error("Channel not accepted yet");
       }
 
       return await ctx.prisma.message.create({
         data: {
           content,
-          privateChannelId,
-          creatorUserId: ctx.currentUser.id,
+          conversationId,
+          senderId: ctx.currentUser.id,
         },
       });
     },
   },
   User: {
-    privateChannels: (parent: User, _: any, { prisma }: Context) => {
-      return prisma.privateChannel.findMany({
+    conversations: (parent: User, _: any, { prisma }: Context) => {
+      return prisma.conversation.findMany({
         where: {
           OR: [
             {
-              fromUserId: parent.id,
+              user1Id: parent.id,
             },
             {
-              toUserId: parent.id,
+              user2Id: parent.id,
             },
           ],
         },
       });
     },
   },
-  PrivateChannel: {
-    fromUser: (parent: any, _: any, { prisma }: Context) => {
-      return prisma.user.findUnique({
+  Conversation: {
+    messages: (parent: any, _: any, ctx: Context) => {
+      if (
+        parent.user1Id !== ctx.currentUser.id &&
+        parent.user2Id !== ctx.currentUser.id
+      ) {
+        throw new Error("Not authorized");
+      }
+
+      return ctx.prisma.message.findMany({
         where: {
-          id: parent.fromUserId,
-        },
-      });
-    },
-    toUser: (parent: any, _: any, { prisma }: Context) => {
-      return prisma.user.findUnique({
-        where: {
-          id: parent.toUserId,
-        },
-      });
-    },
-    messages: (parent: any, _: any, { prisma }: Context) => {
-      return prisma.message.findMany({
-        where: {
-          privateChannelId: parent.id,
+          conversationId: parent.id,
         },
       });
     },
   },
   Message: {
-    creator: (parent: any, _: any, { prisma }: Context) => {
+    sender: (parent: any, _: any, { prisma }: Context) => {
       return prisma.user.findUnique({
         where: {
           id: parent.creatorUserId,
         },
       });
     },
-    privateChannel: (parent: any, _: any, { prisma }: Context) => {
-      return prisma.privateChannel.findUnique({
+    conversation: (parent: any, _: any, { prisma }: Context) => {
+      return prisma.conversation.findUnique({
         where: {
-          id: parent.privateChannelId,
+          id: parent.conversationId,
         },
       });
     },

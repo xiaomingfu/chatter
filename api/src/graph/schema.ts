@@ -2,50 +2,53 @@ import { gql } from "apollo-server-express";
 
 export const typeDefs = gql`
   type Query {
-    publicProfile(userId: String!): PublicProfile!
     user: User!
+    userProfile(userId: String!): UserProfile!
+    allUserProfiles: [UserProfile!]!
+    conversations: [Conversation!]!
+    messages(conversationId: String!): [Message!]!
   }
 
   type Mutation {
-    createPrivateChannel(toUserId: String!): PrivateChannel!
-    acceptPrivateChannel(privateChannelId: String!): PrivateChannel!
-    createMessage(content: String!, privateChannelId: String!): Message!
+    startConversation(otherUserId: String!): Conversation!
+    sendMessage(conversationId: String!, content: String!): Message!
   }
 
   type Subscription {
-    messageCreated(channelID: Int!): Message!
+    messageSent(conversationId: Int!): Message!
   }
 
-  type PublicProfile {
+  type UserProfile {
     id: String!
     name: String!
+    avatarUrl: String
+    company: String
+    title: String
   }
 
   type User {
     id: String!
     name: String!
     email: String!
-
-    privateChannels: [PrivateChannel!]!
+    avatarUrl: String
+    company: String
+    title: String
+    conversations: [Conversation!]!
   }
 
-  type PrivateChannel {
+  type Conversation {
     id: String!
-
-    fromUser: User!
-    toUser: User!
-
-    isAccepted: Boolean!
+    user1Id: String!
+    user2Id: String!
+    unreadCount: Int!
     messages: [Message!]!
   }
 
   type Message {
     id: String!
     content: String!
-
-    creator: User!
-    privateChannel: PrivateChannel!
-
     createdAt: String!
+    sender: UserProfile!
+    conversation: Conversation!
   }
 `;

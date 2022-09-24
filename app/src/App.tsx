@@ -1,51 +1,29 @@
 import UserCard from "./UserCard";
 import { Container, Grid } from "@mui/material";
 
+import { useUserProfiles } from "./lib/graph/profile";
+
 function App() {
+  const { loading, error, data } = useUserProfiles();
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error :(</p>;
+
   return (
     <div className="App">
       <Container maxWidth="md">
         <Grid container spacing={2}>
-          <Grid item xs={8}>
-            <UserCard
-              avatar="https://avatars.githubusercontent.com/u/1443320?v=4"
-              name="Artur Krysiak"
-              email="a@a.com"
-              job="Software Engineer"
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <UserCard
-              avatar="https://avatars.githubusercontent.com/u/1443320?v=4"
-              name="Artur Krysiak"
-              email="a@a.com"
-              job="Software Engineer"
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <UserCard
-              avatar="https://avatars.githubusercontent.com/u/1443320?v=4"
-              name="Artur Krysiak"
-              email="a@a.com"
-              job="Software Engineer"
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <UserCard
-              avatar="https://avatars.githubusercontent.com/u/1443320?v=4"
-              name="Artur Krysiak"
-              email="a@a.com"
-              job="Software Engineer"
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <UserCard
-              avatar="https://avatars.githubusercontent.com/u/1443320?v=4"
-              name="Artur Krysiak"
-              email="a@a.com"
-              job="Software Engineer"
-            />
-          </Grid>
+          {data?.allUserProfiles?.map((profile: any) => (
+            <Grid item xs={12} sm={6} md={4} key={profile.id}>
+              <UserCard
+                userId={profile.id}
+                avatar={profile.avatarUrl}
+                name={profile.name}
+                email={profile.company}
+                job={profile.title}
+              />
+            </Grid>
+          ))}
         </Grid>
       </Container>
     </div>

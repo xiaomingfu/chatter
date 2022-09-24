@@ -8,6 +8,9 @@ async function main() {
     create: {
       email: "alice@prisma.io",
       name: "Alice",
+      avatarUrl: "https://bit.ly/2Z4KKcF",
+      company: "Prisma",
+      title: "ADMIN",
     },
   });
 
@@ -17,10 +20,32 @@ async function main() {
     create: {
       email: "bob@prisma.io",
       name: "Bob",
+      avatarUrl: "https://bit.ly/2Z4KKcF",
+      company: "Prisma",
+      title: "ADMIN",
     },
   });
 
   console.log({ alice, bob });
+
+  const conversation = await prisma.conversation.create({
+    data: {
+      user1Id: alice.id,
+      user2Id: bob.id,
+    },
+  });
+
+  console.log({ conversation });
+
+  const message = await prisma.message.create({
+    data: {
+      conversationId: conversation.id,
+      senderId: alice.id,
+      content: "Hello World",
+    },
+  });
+
+  console.log({ message });
 }
 
 main()
