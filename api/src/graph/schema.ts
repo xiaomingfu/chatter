@@ -38,10 +38,9 @@ export const typeDefs = gql`
 
   type Conversation {
     id: String!
-    user1Id: String!
-    user2Id: String!
     unreadCount: Int!
-    messages: [Message!]!
+    otherUser: UserProfile!
+    lastMessage: Message
   }
 
   type Message {

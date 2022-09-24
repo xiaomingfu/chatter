@@ -141,17 +141,28 @@ export const resolvers = {
         ? parent.user1UnreadCount
         : parent.user2UnreadCount;
     },
-    messages: (parent: any, _: any, ctx: Context) => {
-      if (
-        parent.user1Id !== ctx.currentUser.id &&
-        parent.user2Id !== ctx.currentUser.id
-      ) {
-        throw new Error("Not authorized");
-      }
-
-      return ctx.prisma.message.findMany({
+    otherUser: (parent: any, _: any, ctx: Context) => {
+      return ctx.prisma.user.findUnique({
+        where: {
+          id:
+            ctx.currentUser.id === parent.user1Id
+              ? parent.user2Id
+              : parent.user1Id,
+        },
+        select: {
+          id: true,
+          name: true,
+          avatarUrl: true,
+        },
+      });
+    },
+    lastMessage: (parent: any, _: any, ctx: Context) => {
+      return ctx.prisma.message.findFirst({
         where: {
           conversationId: parent.id,
+        },
+        orderBy: {
+          createdAt: "desc",
         },
       });
     },

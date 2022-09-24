@@ -20,6 +20,16 @@ export function useConversations() {
       conversations {
         id
         unreadCount
+        otherUser {
+          id
+          name
+          avatarUrl
+        }
+        lastMessage {
+          id
+          content
+          createdAt
+        }
       }
     }
   `;
