@@ -8,6 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useStartConversation } from "../lib/graph/conversation";
+import { useRouter } from "next/router";
 
 interface UserCardProps {
   userId: string;
@@ -19,12 +20,15 @@ interface UserCardProps {
 
 function UserCard({ userId, avatar, name, email, job }: UserCardProps) {
   const startConversation = useStartConversation();
+  const router = useRouter();
 
   const sendMessageHandler = () => {
-    startConversation({ variables: { otherUserId: userId } }).then((res) => {
-      console.log(res);
-
-      // redirect to conversation
+    startConversation({ variables: { otherUserId: userId } }).then((resp) => {
+      console.log(resp);
+      const conversationId = resp.data?.startConversation?.id;
+      if (conversationId) {
+        router.push(`/chat/${conversationId}`);
+      }
     });
   };
 

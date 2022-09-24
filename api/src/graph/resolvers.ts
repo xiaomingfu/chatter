@@ -41,9 +41,21 @@ export const resolvers = {
         },
       });
 
-      console.log(ctx.currentUser);
-
       return profiles.filter((profile) => profile.id !== ctx.currentUser.id);
+    },
+    conversations: (_: any, __: any, ctx: Context) => {
+      return ctx.prisma.conversation.findMany({
+        where: {
+          OR: [
+            {
+              user1Id: ctx.currentUser.id,
+            },
+            {
+              user2Id: ctx.currentUser.id,
+            },
+          ],
+        },
+      });
     },
   },
   Mutation: {
@@ -52,12 +64,29 @@ export const resolvers = {
       { otherUserId }: { otherUserId: string },
       ctx: Context
     ) => {
-      return await ctx.prisma.conversation.create({
-        data: {
-          user1Id: ctx.currentUser.id,
-          user2Id: otherUserId,
-        },
-      });
+      try {
+        return await ctx.prisma.conversation.create({
+          data: {
+            user1Id: ctx.currentUser.id,
+            user2Id: otherUserId,
+          },
+        });
+      } catch (err: any) {
+        // If the conversation already exists, return it
+        // Prisma Client error code: P2002
+        // See https://www.prisma.io/docs/reference/api-reference/error-reference#p2002
+        if (err?.code === "P2002") {
+          return ctx.prisma.conversation.findFirst({
+            where: {
+              user1Id: ctx.currentUser.id,
+              user2Id: otherUserId,
+            },
+          });
+        }
+
+        console.error(err);
+        throw new Error("Unable to start conversation");
+      }
     },
     sendMessage: async (
       _: any,
@@ -107,6 +136,11 @@ export const resolvers = {
     },
   },
   Conversation: {
+    unreadCount: (parent: any, _: any, ctx: Context) => {
+      return ctx.currentUser.id === parent.user1Id
+        ? parent.user1UnreadCount
+        : parent.user2UnreadCount;
+    },
     messages: (parent: any, _: any, ctx: Context) => {
       if (
         parent.user1Id !== ctx.currentUser.id &&
@@ -126,7 +160,7 @@ export const resolvers = {
     sender: (parent: any, _: any, { prisma }: Context) => {
       return prisma.user.findUnique({
         where: {
-          id: parent.creatorUserId,
+          id: parent.senderId,
         },
       });
     },

@@ -17,6 +17,9 @@ const Home: NextPage = () => {
   return (
     <Container maxWidth="md">
       <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <h1>Users</h1>
+        </Grid>
         {data?.allUserProfiles?.map((profile: any) => (
           <Grid item xs={12} sm={6} md={4} key={profile.id}>
             <UserCard
