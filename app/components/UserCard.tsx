@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Button,
   Card,
@@ -7,8 +6,10 @@ import {
   CardMedia,
   Typography,
 } from "@mui/material";
-import { useStartConversation } from "../lib/graph/conversation";
 import { useRouter } from "next/router";
+import React from "react";
+
+import { useStartConversation } from "../lib/graph/conversation";
 
 interface UserCardProps {
   userId: string;

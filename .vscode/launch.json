@@ -7,15 +7,17 @@
     {
       "name": "API: Debug",
       "type": "node-terminal",
+      "cwd": "${workspaceFolder}/api",
       "request": "launch",
       "skipFiles": ["<node_internals>/**"],
-      "command": "cd api && npm run dev"
+      "command": "npm run dev"
     },
     {
       "name": "APP: Fullstack Debug",
       "type": "node-terminal",
+      "cwd": "${workspaceFolder}/app",
       "request": "launch",
-      "command": "cd app && npm run dev",
+      "command": "npm run dev",
       "serverReadyAction": {
         "pattern": "started server on .+, url: (https?://.+)",
         "uriFormat": "%s",

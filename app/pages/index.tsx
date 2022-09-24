@@ -1,13 +1,10 @@
-import type { NextPage } from "next";
-import React from "react";
-import Head from "next/head";
-import Image from "next/image";
 import { Container, Grid } from "@mui/material";
+import React from "react";
 
 import UserCard from "../components/UserCard";
-
 import { useUserProfiles } from "../lib/graph/profile";
 
+import type { NextPage } from "next";
 const Home: NextPage = () => {
   const { loading, error, data } = useUserProfiles();
 

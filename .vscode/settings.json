@@ -1,0 +1,8 @@
+{
+  "typescriptHero.imports.grouping": ["Plains", "Modules", "Workspace"],
+  "prettier.printWidth": 80,
+  "typescriptHero.imports.multiLineWrapThreshold": 80,
+  "typescriptHero.imports.organizeOnSave": true,
+  "typescriptHero.imports.stringQuoteStyle": "\"",
+  "git.autofetch": true
+}

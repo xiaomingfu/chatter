@@ -1,11 +1,11 @@
-import type { NextPage } from "next";
-import React from "react";
-import { Grid, Paper, Stack } from "@mui/material";
-
-import { useConversations } from "../../lib/graph/conversation";
+import { Divider, Grid, List } from "@mui/material";
 import Link from "next/link";
+import React from "react";
+
 import ConversationCard from "../../components/ConversationCard";
-import { List, ListDivider, ListItem, Sheet } from "@mui/joy";
+import { useConversations } from "../../lib/graph/conversation";
+
+import type { NextPage } from "next";
 
 const Chat: NextPage = () => {
   const { loading, error, data } = useConversations();
@@ -19,27 +19,14 @@ const Chat: NextPage = () => {
         <Link href="/">Home</Link>
       </Grid>
       <Grid item xs={6} sm={4} md={3}>
-        <Sheet
-          variant="outlined"
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 1,
-            width: 300,
-            borderRadius: "sm",
-          }}
-        >
-          <List sx={{ py: "var(--List-divider-gap)" }}>
-            {data?.conversations?.map((conversation: any, index: number) => (
-              <React.Fragment key={conversation.id}>
-                <ListItem>
-                  <ConversationCard conversation={conversation} />
-                </ListItem>
-                {index !== data.length - 1 && <ListDivider />}
-              </React.Fragment>
-            ))}
-          </List>
-        </Sheet>
+        <List>
+          {data?.conversations?.map((conversation: any, index: number) => (
+            <React.Fragment key={conversation.id}>
+              <ConversationCard conversation={conversation} />
+              {index !== data.length - 1 && <Divider />}
+            </React.Fragment>
+          ))}
+        </List>
       </Grid>
     </Grid>
   );

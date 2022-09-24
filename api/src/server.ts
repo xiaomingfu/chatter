@@ -1,4 +1,5 @@
 import express, { Application, Request, Response } from "express";
+
 import { createApolloServer } from "./graph/server";
 
 export function createExpressApp(): Application {

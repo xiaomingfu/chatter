@@ -1,4 +1,5 @@
 import { User } from "@prisma/client";
+
 import { Context } from "./server";
 
 export const resolvers = {

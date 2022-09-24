@@ -1,8 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import { ApolloServer } from "apollo-server-express";
 
-import { typeDefs } from "./schema";
 import { resolvers } from "./resolvers";
+import { typeDefs } from "./schema";
 
 export interface Context {
   prisma: PrismaClient;

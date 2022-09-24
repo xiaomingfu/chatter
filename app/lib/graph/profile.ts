@@ -1,4 +1,4 @@
-import { useQuery, gql } from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
 
 const GET_USER_PROFILES = gql`
   query GetUserProfiles {

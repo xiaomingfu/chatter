@@ -1,8 +1,9 @@
+import { ListItemContent } from "@mui/joy";
+import { Avatar, Badge, ListItemButton, Typography } from "@mui/material";
+import { green, grey } from "@mui/material/colors";
 import React from "react";
-import { ListItemButton, ListItemContent, Typography } from "@mui/joy";
+
 import { tsToAgo } from "../lib/utils/datetime";
-import { Avatar, Badge } from "@mui/material";
-import { green } from "@mui/material/colors";
 
 interface ConversationCardProps {
   conversation: any;
@@ -11,7 +12,7 @@ interface ConversationCardProps {
 function ConversationCard({ conversation }: ConversationCardProps) {
   const { otherUser, unreadCount, lastMessage } = conversation;
   return (
-    <ListItemButton sx={{ gap: 2 }}>
+    <ListItemButton sx={{ gap: 2, padding: "2px" }}>
       <Badge color="success" badgeContent={unreadCount}>
         <Avatar
           sx={{ bgcolor: green[500] }}
@@ -21,10 +22,15 @@ function ConversationCard({ conversation }: ConversationCardProps) {
         />
       </Badge>
       <ListItemContent sx={{ textAlign: "end", overflow: "hidden" }}>
-        <Typography noWrap fontWeight="md" textOverflow={"ellipsis"}>
+        <Typography
+          noWrap
+          fontSize={14}
+          color={grey[600]}
+          textOverflow={"clip"}
+        >
           {lastMessage?.content}
         </Typography>
-        <Typography fontSize={"sm"}>
+        <Typography fontSize={12} color={grey[500]}>
           {tsToAgo(lastMessage?.createdAt)}
         </Typography>
       </ListItemContent>
