@@ -6,6 +6,7 @@ export const typeDefs = gql`
     userProfile(userId: String!): UserProfile!
     allUserProfiles: [UserProfile!]!
     conversations: [Conversation!]!
+    conversation(id: String!): Conversation!
     messages(conversationId: String!): [Message!]!
   }
 

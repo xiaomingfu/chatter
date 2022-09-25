@@ -58,6 +58,13 @@ export const resolvers = {
         },
       });
     },
+    conversation: (_: any, { id }: { id: string }, ctx: Context) => {
+      return ctx.prisma.conversation.findUnique({
+        where: {
+          id,
+        },
+      });
+    },
     messages: (
       _: any,
       { conversationId }: { conversationId: string },

@@ -19,7 +19,7 @@ function MessageCard({ message }: MessagesListProps) {
         flexDirection: isOwnMessage ? "row" : "row-reverse",
       }}
     >
-      <div>{message.content}</div>
+      <Box>{message.content}</Box>
       <Avatar src={message.sender.avatarUrl} />
     </Box>
   );

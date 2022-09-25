@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 
+import ChatBox from "../../components/ChatBox";
 import ConversationCard from "../../components/ConversationCard";
 import MessagesList from "../../components/MessagesList";
 import { useConversations } from "../../lib/graph/conversation";
@@ -33,7 +34,12 @@ const Chat: NextPage = () => {
         </List>
       </Grid>
       <Grid item xs={6} sm={8} md={9}>
-        {conversationId && <MessagesList conversationId={conversationId} />}
+        {conversationId && (
+          <>
+            <MessagesList conversationId={conversationId} />
+            <ChatBox conversationId={conversationId} />
+          </>
+        )}
       </Grid>
     </Grid>
   );

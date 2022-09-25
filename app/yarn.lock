@@ -445,6 +445,13 @@
   "resolved" "https://registry.npmjs.org/@mui/core-downloads-tracker/-/core-downloads-tracker-5.10.6.tgz"
   "version" "5.10.6"
 
+"@mui/icons-material@^5.10.6":
+  "integrity" "sha512-QwxdRmLA46S94B0hExPDx0td+A2unF+33bQ6Cs+lNpJKVsm1YeHwNdYXYcnpWeHeQQ07055OXl7IB2GKDd0MfA=="
+  "resolved" "https://registry.npmjs.org/@mui/icons-material/-/icons-material-5.10.6.tgz"
+  "version" "5.10.6"
+  dependencies:
+    "@babel/runtime" "^7.19.0"
+
 "@mui/joy@^5.0.0-alpha.46":
   "integrity" "sha512-jb6hwhogXFu5tlWxWLP/UhOhvasgQk3xtnlKY9RoFI1UnuZGs0RaH8sR4VH1iIMoa+3O5wHVyzHG/rrlXDXJrA=="
   "resolved" "https://registry.npmjs.org/@mui/joy/-/joy-5.0.0-alpha.46.tgz"
@@ -461,7 +468,7 @@
     "prop-types" "^15.8.1"
     "react-is" "^18.2.0"
 
-"@mui/material@^5.10.6":
+"@mui/material@^5.0.0", "@mui/material@^5.10.6":
   "integrity" "sha512-QilW5PAAGSQdN7Cpp4rwSQ1doJAt3ca1a2PHZtr8RLVlpHnXb+qQ8CeDo9+9V2fK5CDNdtTN1F+iJKO43aFBpQ=="
   "resolved" "https://registry.npmjs.org/@mui/material/-/material-5.10.6.tgz"
   "version" "5.10.6"
