@@ -1,9 +1,11 @@
 import { ListItemContent } from "@mui/joy";
 import { Avatar, Badge, ListItemButton, Typography } from "@mui/material";
-import { green, grey } from "@mui/material/colors";
+import { blue, green, grey } from "@mui/material/colors";
+import { useRouter } from "next/router";
 import React from "react";
 
 import { tsToAgo } from "../lib/utils/datetime";
+import { queryParamToString } from "../lib/utils/query";
 
 interface ConversationCardProps {
   conversation: any;
@@ -11,8 +13,21 @@ interface ConversationCardProps {
 
 function ConversationCard({ conversation }: ConversationCardProps) {
   const { otherUser, unreadCount, lastMessage } = conversation;
+  const router = useRouter();
+  const isSelected =
+    queryParamToString(router.query.conversationId) === conversation.id;
+
   return (
-    <ListItemButton sx={{ gap: 2, padding: "2px" }}>
+    <ListItemButton
+      sx={{
+        gap: 2,
+        padding: "2px",
+        backgroundColor: isSelected ? `${blue[100]} !important` : "inherit",
+      }}
+      onClick={() => {
+        router.push(`/chat/${conversation.id}`);
+      }}
+    >
       <Badge color="success" badgeContent={unreadCount}>
         <Avatar
           sx={{ bgcolor: green[500] }}

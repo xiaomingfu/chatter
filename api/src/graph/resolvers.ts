@@ -4,7 +4,7 @@ import { Context } from "./server";
 
 export const resolvers = {
   Query: {
-    user: (_: any, __: any, ctx: Context) => {
+    currentUser: (_: any, __: any, ctx: Context) => {
       return ctx.prisma.user.findUnique({
         where: {
           id: ctx.currentUser.id,
@@ -55,6 +55,20 @@ export const resolvers = {
               user2Id: ctx.currentUser.id,
             },
           ],
+        },
+      });
+    },
+    messages: (
+      _: any,
+      { conversationId }: { conversationId: string },
+      ctx: Context
+    ) => {
+      return ctx.prisma.message.findMany({
+        where: {
+          conversationId,
+        },
+        orderBy: {
+          createdAt: "asc",
         },
       });
     },

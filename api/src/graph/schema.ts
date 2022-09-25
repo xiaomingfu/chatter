@@ -2,7 +2,7 @@ import { gql } from "apollo-server-express";
 
 export const typeDefs = gql`
   type Query {
-    user: User!
+    currentUser: User!
     userProfile(userId: String!): UserProfile!
     allUserProfiles: [UserProfile!]!
     conversations: [Conversation!]!

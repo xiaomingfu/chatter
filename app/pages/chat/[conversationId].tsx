@@ -1,13 +1,17 @@
 import { Divider, Grid, List } from "@mui/material";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React from "react";
 
 import ConversationCard from "../../components/ConversationCard";
+import MessagesList from "../../components/MessagesList";
 import { useConversations } from "../../lib/graph/conversation";
+import { queryParamToString } from "../../lib/utils/query";
 
 import type { NextPage } from "next";
-
 const Chat: NextPage = () => {
+  const router = useRouter();
+  const conversationId = queryParamToString(router.query.conversationId);
   const { loading, error, data } = useConversations();
 
   if (loading) return <p>Loading...</p>;
@@ -27,6 +31,9 @@ const Chat: NextPage = () => {
             </React.Fragment>
           ))}
         </List>
+      </Grid>
+      <Grid item xs={6} sm={8} md={9}>
+        {conversationId && <MessagesList conversationId={conversationId} />}
       </Grid>
     </Grid>
   );
