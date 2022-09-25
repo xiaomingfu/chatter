@@ -14,12 +14,13 @@ function MessageCard({ message }: MessagesListProps) {
   return (
     <Box
       sx={{
+        width: "100%",
         gap: 2,
         display: "flex",
         flexDirection: isOwnMessage ? "row" : "row-reverse",
       }}
     >
-      <Box>{message.content}</Box>
+      <Box sx={{ flexGrow: 1 }}>{message.content}</Box>
       <Avatar src={message.sender.avatarUrl} />
     </Box>
   );

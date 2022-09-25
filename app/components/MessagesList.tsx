@@ -1,5 +1,4 @@
-import { List, ListItem } from "@mui/joy";
-import { Divider } from "@mui/material";
+import { List, ListDivider, ListItem } from "@mui/joy";
 import React from "react";
 
 import { useMessages } from "../lib/graph/message";
@@ -17,13 +16,12 @@ function MessagesList({ conversationId }: MessagesListProps) {
 
   return (
     <List>
-      <Divider />
       {data.messages.map((message: any, index: number) => (
         <React.Fragment key={message.id}>
           <ListItem>
             <MessageCard message={message} />
           </ListItem>
-          <Divider />
+          <ListDivider />
         </React.Fragment>
       ))}
     </List>

@@ -1,11 +1,12 @@
-import { Divider, Grid, List } from "@mui/material";
-import Link from "next/link";
+import { ListDivider, ListItem } from "@mui/joy";
+import { Box, Grid, List } from "@mui/material";
 import { useRouter } from "next/router";
 import React from "react";
 
 import ChatBox from "../../components/ChatBox";
 import ConversationCard from "../../components/ConversationCard";
 import MessagesList from "../../components/MessagesList";
+import Navbar from "../../components/Navbar";
 import { useConversations } from "../../lib/graph/conversation";
 import { queryParamToString } from "../../lib/utils/query";
 
@@ -19,29 +20,33 @@ const Chat: NextPage = () => {
   if (error) return <p>Error :(</p>;
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12}>
-        <Link href="/">Home</Link>
+    <Box>
+      <Navbar />
+      <Grid container spacing={1}>
+        <Grid item xs={4} md={3}>
+          <List>
+            {data?.conversations?.map((conversation: any, index: number) => (
+              <React.Fragment key={conversation.id}>
+                <ListItem>
+                  <ConversationCard conversation={conversation} />
+                </ListItem>
+                {index !== data?.conversations?.length - 1 && <ListDivider />}
+              </React.Fragment>
+            ))}
+          </List>
+        </Grid>
+        <Grid item xs={8} md={9}>
+          <Box padding={2}>
+            {conversationId && (
+              <Box>
+                <MessagesList conversationId={conversationId} />
+                <ChatBox conversationId={conversationId} />
+              </Box>
+            )}
+          </Box>
+        </Grid>
       </Grid>
-      <Grid item xs={6} sm={4} md={3}>
-        <List>
-          {data?.conversations?.map((conversation: any, index: number) => (
-            <React.Fragment key={conversation.id}>
-              <ConversationCard conversation={conversation} />
-              {index !== data.length - 1 && <Divider />}
-            </React.Fragment>
-          ))}
-        </List>
-      </Grid>
-      <Grid item xs={6} sm={8} md={9}>
-        {conversationId && (
-          <>
-            <MessagesList conversationId={conversationId} />
-            <ChatBox conversationId={conversationId} />
-          </>
-        )}
-      </Grid>
-    </Grid>
+    </Box>
   );
 };
 

@@ -1,6 +1,6 @@
 import { ListItemContent } from "@mui/joy";
 import { Avatar, Badge, ListItemButton, Typography } from "@mui/material";
-import { blue, green, grey } from "@mui/material/colors";
+import { blue, grey } from "@mui/material/colors";
 import { useRouter } from "next/router";
 import React from "react";
 
@@ -21,31 +21,34 @@ function ConversationCard({ conversation }: ConversationCardProps) {
     <ListItemButton
       sx={{
         gap: 2,
-        padding: "2px",
-        backgroundColor: isSelected ? `${blue[100]} !important` : "inherit",
+        backgroundColor: isSelected ? `${blue[600]} !important` : "inherit",
       }}
       onClick={() => {
         router.push(`/chat/${conversation.id}`);
       }}
     >
-      <Badge color="success" badgeContent={unreadCount}>
+      <Badge color="warning" badgeContent={unreadCount}>
         <Avatar
-          sx={{ bgcolor: green[500] }}
           variant="rounded"
           src={otherUser.avatarUrl}
           alt={otherUser.name}
         />
       </Badge>
-      <ListItemContent sx={{ textAlign: "end", overflow: "hidden" }}>
+      <ListItemContent
+        sx={{
+          textAlign: "end",
+          overflow: "hidden",
+        }}
+      >
         <Typography
           noWrap
-          fontSize={14}
-          color={grey[600]}
+          fontSize={12}
+          color={grey[isSelected ? 100 : 600]}
           textOverflow={"clip"}
         >
           {lastMessage?.content}
         </Typography>
-        <Typography fontSize={12} color={grey[500]}>
+        <Typography fontSize={11} color={grey[isSelected ? 200 : 500]}>
           {tsToAgo(lastMessage?.createdAt)}
         </Typography>
       </ListItemContent>

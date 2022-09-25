@@ -56,6 +56,9 @@ export const resolvers = {
             },
           ],
         },
+        orderBy: {
+          updatedAt: "desc",
+        },
       });
     },
     conversation: (_: any, { id }: { id: string }, ctx: Context) => {
