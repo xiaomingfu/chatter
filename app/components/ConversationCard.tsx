@@ -1,6 +1,4 @@
-import { ListItemContent } from "@mui/joy";
-import { Avatar, Badge, ListItemButton, Typography } from "@mui/material";
-import { blue, grey } from "@mui/material/colors";
+import { Avatar, Badge, Box, ListItemButton, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import React from "react";
 
@@ -19,10 +17,18 @@ function ConversationCard({ conversation }: ConversationCardProps) {
 
   return (
     <ListItemButton
-      sx={{
-        gap: 2,
-        backgroundColor: isSelected ? `${blue[600]} !important` : "inherit",
-      }}
+      sx={[
+        {
+          gap: 2,
+        },
+        isSelected && {
+          color: "primary.contrastText",
+          bgcolor: "primary.main",
+          ":hover": {
+            bgcolor: "primary.dark",
+          },
+        },
+      ]}
       onClick={() => {
         router.push(`/chat/${conversation.id}`);
       }}
@@ -34,24 +40,25 @@ function ConversationCard({ conversation }: ConversationCardProps) {
           alt={otherUser.name}
         />
       </Badge>
-      <ListItemContent
+      <Box
         sx={{
+          width: "100%",
           textAlign: "end",
           overflow: "hidden",
         }}
       >
-        <Typography
-          noWrap
-          fontSize={12}
-          color={grey[isSelected ? 100 : 600]}
-          textOverflow={"clip"}
-        >
-          {lastMessage?.content}
+        <Box sx={{ display: "flex", justifyContent: "space-between" }} gap={1}>
+          <Typography noWrap fontSize={14} textOverflow={"clip"}>
+            {otherUser?.name}
+          </Typography>
+          <Typography noWrap fontSize={12} textOverflow={"clip"}>
+            {lastMessage && tsToAgo(lastMessage.createdAt)}&nbsp;
+          </Typography>
+        </Box>
+        <Typography noWrap fontSize={12}>
+          {lastMessage?.content}&nbsp;
         </Typography>
-        <Typography fontSize={11} color={grey[isSelected ? 200 : 500]}>
-          {tsToAgo(lastMessage?.createdAt)}
-        </Typography>
-      </ListItemContent>
+      </Box>
     </ListItemButton>
   );
 }

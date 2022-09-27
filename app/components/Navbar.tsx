@@ -11,6 +11,8 @@ import {
 } from "@mui/material";
 import React from "react";
 
+import { useSearchInput } from "./SearchInputContext";
+
 const SearchInput = styled(InputBase)(({ theme }: any) => ({
   backgroundColor: theme.palette.background.paper,
   borderRadius: theme.shape.borderRadius,
@@ -21,15 +23,22 @@ const SearchInput = styled(InputBase)(({ theme }: any) => ({
 }));
 
 function Navbar() {
+  const { searchInput, setSearchInput } = useSearchInput();
+
   return (
-    <Box sx={{ width: "100%", height: "100%" }}>
-      <AppBar position="static" sx={{ height: "100%" }}>
+    <Box sx={{ width: "100%" }}>
+      <AppBar position="static" sx={{ height: "100%", boxShadow: "none" }}>
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Chatter
           </Typography>
           <Box gap={2} sx={{ display: "flex" }}>
-            <SearchInput placeholder="Search ..." size="small" />
+            <SearchInput
+              placeholder="Search ..."
+              size="small"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+            />
             <IconButton aria-label="show 16 new notifications" color="inherit">
               <Badge badgeContent={16} color="error">
                 <NotificationsIcon />

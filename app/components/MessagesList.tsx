@@ -1,4 +1,4 @@
-import { List, ListDivider, ListItem } from "@mui/joy";
+import { List } from "@mui/material";
 import React from "react";
 
 import { useMessages } from "../lib/graph/message";
@@ -15,14 +15,15 @@ function MessagesList({ conversationId }: MessagesListProps) {
   if (error) return <p>Error :(</p>;
 
   return (
-    <List>
-      {data.messages.map((message: any, index: number) => (
-        <React.Fragment key={message.id}>
-          <ListItem>
-            <MessageCard message={message} />
-          </ListItem>
-          <ListDivider />
-        </React.Fragment>
+    <List
+      sx={{
+        width: "100%",
+        height: "100%",
+        overflowY: "scroll",
+      }}
+    >
+      {data.messages.map((message: any) => (
+        <MessageCard key={message.id} message={message} />
       ))}
     </List>
   );
