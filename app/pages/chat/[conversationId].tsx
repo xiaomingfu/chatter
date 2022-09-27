@@ -6,11 +6,12 @@ import ChatBox from "../../components/ChatBox";
 import ConversationsList from "../../components/ConversationsList";
 import Layout from "../../components/Layout";
 import MessagesList from "../../components/MessagesList";
-import { useSearchInput } from "../../components/SearchInputContext";
 import UsersGrid from "../../components/UsersGrid";
+import useSearchInput from "../../lib/graph/local/searchInput";
 import { queryParamToString } from "../../lib/utils/query";
 
 import type { NextPage } from "next";
+
 const Chat: NextPage = () => {
   const router = useRouter();
   const conversationId = queryParamToString(router.query.conversationId);

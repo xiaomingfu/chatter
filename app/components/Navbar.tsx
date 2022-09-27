@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import React from "react";
 
-import { useSearchInput } from "./SearchInputContext";
+import useSearchInput from "../lib/graph/local/searchInput";
 
 const SearchInput = styled(InputBase)(({ theme }: any) => ({
   backgroundColor: theme.palette.background.paper,
