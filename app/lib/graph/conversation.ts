@@ -47,6 +47,7 @@ export const GET_CONVERSATION = gql`
   }
 `;
 
+// Fix me: update cache or refetch query
 export function useStartConversation() {
   const [startConversation] = useMutation(START_CONVERSATION);
   return startConversation;

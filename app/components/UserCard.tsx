@@ -6,10 +6,11 @@ import {
   CardMedia,
   Typography,
 } from "@mui/material";
-import { useRouter } from "next/router";
 import React from "react";
 
 import { useStartConversation } from "../lib/graph/conversation";
+import useConversationId from "../lib/graph/local/conversationId";
+import useSearchInput from "../lib/graph/local/searchInput";
 
 interface UserCardProps {
   userId: string;
@@ -21,14 +22,16 @@ interface UserCardProps {
 
 function UserCard({ userId, avatar, name, email, job }: UserCardProps) {
   const startConversation = useStartConversation();
-  const router = useRouter();
+
+  const { setConversationId } = useConversationId();
+  const { setSearchInput } = useSearchInput();
 
   const sendMessageHandler = () => {
     startConversation({ variables: { otherUserId: userId } }).then((resp) => {
-      console.log(resp);
       const conversationId = resp.data?.startConversation?.id;
       if (conversationId) {
-        router.push(`/chat/${conversationId}`);
+        setConversationId(conversationId);
+        setSearchInput("");
       }
     });
   };

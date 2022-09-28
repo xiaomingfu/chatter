@@ -135,13 +135,31 @@ export const resolvers = {
         throw new Error("Not authorized");
       }
 
-      return await ctx.prisma.message.create({
-        data: {
-          content,
-          conversationId,
-          senderId: ctx.currentUser.id,
-        },
-      });
+      const [__, message] = await ctx.prisma.$transaction([
+        ctx.prisma.conversation.update({
+          where: {
+            id: conversationId,
+          },
+          data: {
+            updatedAt: new Date(),
+            user1UnreadCount: {
+              increment: conv.user1Id === ctx.currentUser.id ? 0 : 1,
+            },
+            user2UnreadCount: {
+              increment: conv.user2Id === ctx.currentUser.id ? 0 : 1,
+            },
+          },
+        }),
+        ctx.prisma.message.create({
+          data: {
+            content,
+            conversationId,
+            senderId: ctx.currentUser.id,
+          },
+        }),
+      ]);
+
+      return message;
     },
   },
   User: {
