@@ -1,22 +1,31 @@
-import { Container, Grid } from "@mui/material";
+import dynamic from "next/dynamic";
 import React from "react";
 
+import Layout from "../components/Layout";
 import UsersGrid from "../components/UsersGrid";
-import { useUserProfiles } from "../lib/graph/profile";
+import useSearchInput from "../lib/graph/local/searchInput";
+
+const ChatterWithNoSSR = dynamic(() => import("../components/Chatter"), {
+  ssr: false,
+});
 
 import type { NextPage } from "next";
-const Home: NextPage = () => {
-  const { loading, error, data } = useUserProfiles();
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :(</p>;
+const Home: NextPage = () => {
+  const { searchInput } = useSearchInput();
+
+  if (searchInput) {
+    return (
+      <Layout>
+        <UsersGrid />
+      </Layout>
+    );
+  }
 
   return (
-    <Container maxWidth="md">
-      <Grid container spacing={2}>
-        <UsersGrid />
-      </Grid>
-    </Container>
+    <Layout>
+      <ChatterWithNoSSR />
+    </Layout>
   );
 };
 

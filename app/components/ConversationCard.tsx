@@ -1,9 +1,8 @@
 import { Avatar, Badge, Box, ListItemButton, Typography } from "@mui/material";
-import { useRouter } from "next/router";
 import React from "react";
 
+import useConversationId from "../lib/graph/local/conversationId";
 import { tsToAgo } from "../lib/utils/datetime";
-import { queryParamToString } from "../lib/utils/query";
 
 interface ConversationCardProps {
   conversation: any;
@@ -11,9 +10,12 @@ interface ConversationCardProps {
 
 function ConversationCard({ conversation }: ConversationCardProps) {
   const { otherUser, unreadCount, lastMessage } = conversation;
-  const router = useRouter();
-  const isSelected =
-    queryParamToString(router.query.conversationId) === conversation.id;
+  const { conversationId, setConversationId } = useConversationId();
+  const isSelected = conversationId === conversation.id;
+
+  const handleOnClick = () => {
+    setConversationId(conversation.id);
+  };
 
   return (
     <ListItemButton
@@ -29,9 +31,7 @@ function ConversationCard({ conversation }: ConversationCardProps) {
           },
         },
       ]}
-      onClick={() => {
-        router.push(`/chat/${conversation.id}`);
-      }}
+      onClick={handleOnClick}
     >
       <Badge color="warning" badgeContent={unreadCount}>
         <Avatar

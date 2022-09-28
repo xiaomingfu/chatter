@@ -1,5 +1,6 @@
 import { InMemoryCache } from "@apollo/client";
 
+import { conversationIdVar } from "./local/conversationId";
 import { searchInputVar } from "./local/searchInput";
 
 const inMemoryCache: InMemoryCache = new InMemoryCache({
@@ -9,6 +10,11 @@ const inMemoryCache: InMemoryCache = new InMemoryCache({
         searchInput: {
           read() {
             return searchInputVar();
+          },
+        },
+        conversationId: {
+          read() {
+            return conversationIdVar();
           },
         },
       },
