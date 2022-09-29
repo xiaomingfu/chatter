@@ -1,6 +1,10 @@
-import { User } from "@prisma/client";
+import { withFilter } from "graphql-subscriptions";
 
 import { Context } from "./server";
+
+enum Events {
+  MessageCreated = "MessageCreated",
+}
 
 export const resolvers = {
   Query: {
@@ -159,11 +163,28 @@ export const resolvers = {
         }),
       ]);
 
+      ctx.pubsub.publish(Events.MessageCreated, {
+        messageCreated: message,
+      });
+
       return message;
     },
   },
+  Subscription: {
+    messageCreated: {
+      subscribe: withFilter(
+        (_: any, __: any, ctx: Context) =>
+          ctx.pubsub.asyncIterator(Events.MessageCreated),
+        (payload, variables) => {
+          return (
+            payload.messageCreated.conversationId === variables.conversationId
+          );
+        }
+      ),
+    },
+  },
   User: {
-    conversations: (parent: User, _: any, { prisma }: Context) => {
+    conversations: (parent: any, _: any, { prisma }: Context) => {
       return prisma.conversation.findMany({
         where: {
           OR: [
