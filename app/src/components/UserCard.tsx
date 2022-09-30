@@ -36,6 +36,11 @@ function UserCard({ userId, avatar, name, email, job }: UserCardProps) {
     });
   };
 
+  const useUserHandler = () => {
+    localStorage.setItem("currentUserId", userId);
+    setSearchInput("");
+  };
+
   return (
     <Card>
       <CardMedia component="img" height="160" image={avatar} alt="avatar" />
@@ -57,6 +62,11 @@ function UserCard({ userId, avatar, name, email, job }: UserCardProps) {
           Send message
         </Button>
         <Button size="small">View Profile</Button>
+      </CardActions>
+      <CardActions>
+        <Button variant="contained" size="small" onClick={useUserHandler}>
+          Set as me
+        </Button>
       </CardActions>
     </Card>
   );
