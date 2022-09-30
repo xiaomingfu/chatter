@@ -1,4 +1,4 @@
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery, useSubscription } from "@apollo/client";
 
 import { GET_CONVERSATIONS } from "./conversation";
 
@@ -80,4 +80,28 @@ export function useSendMessage() {
         });
       },
     });
+}
+
+export const SubscribeToMessageCreated = gql`
+  subscription Subscription($conversationId: String!) {
+    messageCreated(conversationId: $conversationId) {
+      id
+      content
+      createdAt
+    }
+  }
+`;
+
+export function useMessageCreated(conversationId: string) {
+  const { data, loading, error } = useSubscription(SubscribeToMessageCreated, {
+    variables: { conversationId },
+  });
+
+  console.log("useMessageCreated", data, loading, error);
+
+  return {
+    data,
+    loading,
+    error,
+  };
 }

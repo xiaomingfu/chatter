@@ -139,7 +139,7 @@ export const resolvers = {
         throw new Error("Not authorized");
       }
 
-      const [__, message] = await ctx.prisma.$transaction([
+      const [updatedConv, message] = await ctx.prisma.$transaction([
         ctx.prisma.conversation.update({
           where: {
             id: conversationId,
@@ -164,7 +164,10 @@ export const resolvers = {
       ]);
 
       ctx.pubsub.publish(Events.MessageCreated, {
-        messageCreated: message,
+        messageCreated: {
+          ...message,
+          conversation: updatedConv,
+        },
       });
 
       return message;
@@ -175,9 +178,15 @@ export const resolvers = {
       subscribe: withFilter(
         (_: any, __: any, ctx: Context) =>
           ctx.pubsub.asyncIterator(Events.MessageCreated),
-        (payload, variables) => {
+        (payload, variables, wsCtx) => {
+          const senderId = payload.messageCreated.senderId;
+          const user1Id = payload.messageCreated.conversation.user1Id;
+          const user2Id = payload.messageCreated.conversation.user2Id;
+
           return (
-            payload.messageCreated.conversationId === variables.conversationId
+            senderId !== wsCtx.currentUser.id &&
+            (user1Id === wsCtx.currentUser.id ||
+              user2Id === wsCtx.currentUser.id)
           );
         }
       ),
