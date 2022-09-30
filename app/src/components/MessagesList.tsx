@@ -1,7 +1,7 @@
 import { List } from "@mui/material";
 import React from "react";
 
-import { useMessages } from "../lib/graph/message";
+import { useMessageCreated, useMessages } from "../lib/graph/message";
 import MessageCard from "./MessageCard";
 
 interface MessagesListProps {
@@ -10,7 +10,7 @@ interface MessagesListProps {
 
 function MessagesList({ conversationId }: MessagesListProps) {
   const { loading, error, data } = useMessages(conversationId);
-
+  useMessageCreated(conversationId);
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
 

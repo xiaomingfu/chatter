@@ -95,9 +95,41 @@ export const SubscribeToMessageCreated = gql`
 export function useMessageCreated(conversationId: string) {
   const { data, loading, error } = useSubscription(SubscribeToMessageCreated, {
     variables: { conversationId },
-  });
+    onSubscriptionData: ({ client, subscriptionData }) => {
+      const { messageCreated } = subscriptionData.data;
 
-  console.log("useMessageCreated", data, loading, error);
+      const { messages } = client.readQuery({
+        query: GET_MESSAGES,
+        variables: { conversationId },
+      }) as any;
+
+      client.writeQuery({
+        query: GET_MESSAGES,
+        variables: { conversationId },
+        data: { messages: messages.concat([messageCreated]) },
+      });
+
+      const { conversations } = client.readQuery({
+        query: GET_CONVERSATIONS,
+      }) as any;
+
+      client.writeQuery({
+        query: GET_CONVERSATIONS,
+        data: {
+          conversations: conversations.map((conversation: any) => {
+            if (conversation.id === conversationId) {
+              return {
+                ...conversation,
+                unreadMessageCount: conversation.unreadMessageCount + 1,
+                lastMessage: messageCreated,
+              };
+            }
+            return conversation;
+          }),
+        },
+      });
+    },
+  });
 
   return {
     data,
