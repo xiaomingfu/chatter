@@ -16,7 +16,7 @@ export const typeDefs = gql`
   }
 
   type Subscription {
-    messageSent(conversationId: Int!): Message!
+    messageCreated(conversationId: String!): Message!
   }
 
   type UserProfile {
@@ -35,6 +35,7 @@ export const typeDefs = gql`
     company: String
     title: String
     conversations: [Conversation!]!
+    totalUnreadMessagesCnt: Int!
   }
 
   type Conversation {

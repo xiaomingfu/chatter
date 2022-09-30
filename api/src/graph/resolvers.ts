@@ -1,6 +1,10 @@
-import { User } from "@prisma/client";
+import { withFilter } from "graphql-subscriptions";
 
 import { Context } from "./server";
+
+enum Events {
+  MessageCreated = "MessageCreated",
+}
 
 export const resolvers = {
   Query: {
@@ -135,7 +139,7 @@ export const resolvers = {
         throw new Error("Not authorized");
       }
 
-      const [__, message] = await ctx.prisma.$transaction([
+      const [updatedConv, message] = await ctx.prisma.$transaction([
         ctx.prisma.conversation.update({
           where: {
             id: conversationId,
@@ -159,11 +163,37 @@ export const resolvers = {
         }),
       ]);
 
+      ctx.pubsub.publish(Events.MessageCreated, {
+        messageCreated: {
+          ...message,
+          conversation: updatedConv,
+        },
+      });
+
       return message;
     },
   },
+  Subscription: {
+    messageCreated: {
+      subscribe: withFilter(
+        (_: any, __: any, ctx: Context) =>
+          ctx.pubsub.asyncIterator(Events.MessageCreated),
+        (payload, variables, wsCtx) => {
+          const senderId = payload.messageCreated.senderId;
+          const user1Id = payload.messageCreated.conversation.user1Id;
+          const user2Id = payload.messageCreated.conversation.user2Id;
+
+          return (
+            senderId !== wsCtx.currentUser.id &&
+            (user1Id === wsCtx.currentUser.id ||
+              user2Id === wsCtx.currentUser.id)
+          );
+        }
+      ),
+    },
+  },
   User: {
-    conversations: (parent: User, _: any, { prisma }: Context) => {
+    conversations: (parent: any, _: any, { prisma }: Context) => {
       return prisma.conversation.findMany({
         where: {
           OR: [
@@ -176,6 +206,32 @@ export const resolvers = {
           ],
         },
       });
+    },
+    totalUnreadMessagesCnt: async (
+      parent: any,
+      _: any,
+      { prisma }: Context
+    ) => {
+      const v1 = await prisma.conversation.aggregate({
+        _sum: {
+          user1UnreadCount: true,
+        },
+        where: {
+          user1Id: parent.id,
+        },
+      });
+      const v2 = await prisma.conversation.aggregate({
+        _sum: {
+          user2UnreadCount: true,
+        },
+        where: {
+          user2Id: parent.id,
+        },
+      });
+
+      return (
+        (v1._sum?.user1UnreadCount || 0) + (v2._sum?.user2UnreadCount || 0)
+      );
     },
   },
   Conversation: {

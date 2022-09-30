@@ -13,16 +13,11 @@
       "command": "npm run dev"
     },
     {
-      "name": "APP: Fullstack Debug",
+      "name": "APP: Debug",
       "type": "node-terminal",
       "cwd": "${workspaceFolder}/app",
       "request": "launch",
-      "command": "npm run dev",
-      "serverReadyAction": {
-        "pattern": "started server on .+, url: (https?://.+)",
-        "uriFormat": "%s",
-        "action": "debugWithChrome"
-      }
+      "command": "npm run start"
     }
   ]
 }

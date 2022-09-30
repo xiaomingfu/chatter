@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 async function main() {
   const users = await Promise.all(
-    Array.from({ length: 1000 })
+    Array.from({ length: 100 })
       .map(() => ({
         name: faker.name.fullName(),
         email: faker.internet.email(),
@@ -22,7 +22,7 @@ async function main() {
   const usedPairs = new Set<string>();
 
   const conversations = await Promise.all(
-    Array.from({ length: 20 })
+    Array.from({ length: 10 })
       .map(() => {
         const user2 = randomArrayItem(users);
 
@@ -44,7 +44,7 @@ async function main() {
       .filter(Boolean)
   );
 
-  const messagePromises = Array.from({ length: 200 }).map(() => {
+  const messagePromises = Array.from({ length: 50 }).map(() => {
     const conversation = randomArrayItem(conversations);
     const senderId = randomArrayItem([
       conversation.user1Id,
@@ -62,7 +62,7 @@ async function main() {
   });
 
   const moreConvs = await Promise.all(
-    Array.from({ length: 1000 })
+    Array.from({ length: 100 })
       .map(() => {
         const user1 = randomArrayItem(users);
         const user2 = randomArrayItem(users);
@@ -85,7 +85,7 @@ async function main() {
       .filter(Boolean)
   );
 
-  Array.from({ length: 2000 }).forEach(() => {
+  Array.from({ length: 200 }).forEach(() => {
     const conversation = randomArrayItem(moreConvs);
     const senderId = randomArrayItem([
       conversation.user1Id,
