@@ -207,6 +207,32 @@ export const resolvers = {
         },
       });
     },
+    totalUnreadMessagesCnt: async (
+      parent: any,
+      _: any,
+      { prisma }: Context
+    ) => {
+      const v1 = await prisma.conversation.aggregate({
+        _sum: {
+          user1UnreadCount: true,
+        },
+        where: {
+          user1Id: parent.id,
+        },
+      });
+      const v2 = await prisma.conversation.aggregate({
+        _sum: {
+          user2UnreadCount: true,
+        },
+        where: {
+          user2Id: parent.id,
+        },
+      });
+
+      return (
+        (v1._sum?.user1UnreadCount || 0) + (v2._sum?.user2UnreadCount || 0)
+      );
+    },
   },
   Conversation: {
     unreadCount: (parent: any, _: any, ctx: Context) => {

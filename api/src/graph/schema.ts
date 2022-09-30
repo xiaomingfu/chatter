@@ -35,6 +35,7 @@ export const typeDefs = gql`
     company: String
     title: String
     conversations: [Conversation!]!
+    totalUnreadMessagesCnt: Int!
   }
 
   type Conversation {
