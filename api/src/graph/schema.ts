@@ -3,10 +3,8 @@ import { gql } from "apollo-server-express";
 export const typeDefs = gql`
   type Query {
     currentUser: User!
-    userProfile(userId: String!): UserProfile!
     allUserProfiles: [UserProfile!]!
     conversations: [Conversation!]!
-    conversation(id: String!): Conversation!
     messages(conversationId: String!): [Message!]!
   }
 
@@ -34,12 +32,12 @@ export const typeDefs = gql`
     avatarUrl: String
     company: String
     title: String
-    conversations: [Conversation!]!
     totalUnreadMessagesCnt: Int!
   }
 
   type Conversation {
     id: String!
+    updatedAt: String!
     unreadCount: Int!
     otherUser: UserProfile!
     lastMessage: Message

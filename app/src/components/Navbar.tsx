@@ -1,12 +1,14 @@
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import {
   AppBar,
+  Avatar,
   Badge,
   Box,
   IconButton,
   InputBase,
   styled,
   Toolbar,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import React from "react";
@@ -28,8 +30,12 @@ function Navbar() {
   const { data } = useCurrentUser();
 
   return (
-    <Box sx={{ width: "100%" }}>
-      <AppBar position="static" sx={{ height: "100%", boxShadow: "none" }}>
+    <Box
+      sx={{
+        width: "100%",
+      }}
+    >
+      <AppBar position="sticky" sx={{ boxShadow: "none" }}>
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Chatter
@@ -49,6 +55,12 @@ function Navbar() {
                 <NotificationsIcon />
               </Badge>
             </IconButton>
+            <Tooltip title={data?.currentUser.name || ""}>
+              <Avatar
+                src={data?.currentUser.avatarUrl}
+                alt={data?.currentUser.name}
+              />
+            </Tooltip>
           </Box>
         </Toolbar>
       </AppBar>

@@ -14,25 +14,7 @@ export const GET_CONVERSATIONS = gql`
     conversations {
       id
       unreadCount
-      otherUser {
-        id
-        name
-        avatarUrl
-      }
-      lastMessage {
-        id
-        content
-        createdAt
-      }
-    }
-  }
-`;
-
-export const GET_CONVERSATION = gql`
-  query GetConversation($id: String!) {
-    conversation(id: $id) {
-      id
-      unreadCount
+      updatedAt
       otherUser {
         id
         name
@@ -55,18 +37,6 @@ export function useStartConversation() {
 
 export function useConversations() {
   const { data, loading, error } = useQuery(GET_CONVERSATIONS);
-
-  return {
-    data,
-    loading,
-    error,
-  };
-}
-
-export function useConversation(conversationId: string) {
-  const { data, loading, error } = useQuery(GET_CONVERSATION, {
-    variables: { id: conversationId },
-  });
 
   return {
     data,

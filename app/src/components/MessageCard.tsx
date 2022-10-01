@@ -1,4 +1,4 @@
-import { Avatar, ListItem, Typography } from "@mui/material";
+import { Avatar, ListItem, Tooltip, Typography } from "@mui/material";
 import { blue, grey } from "@mui/material/colors";
 import { Box } from "@mui/system";
 import React from "react";
@@ -22,10 +22,12 @@ function MessageCard({ message }: MessagesListProps) {
         alignItems: "flex-start",
       }}
     >
-      <Avatar
-        src={message.sender.avatarUrl}
-        sx={{ visibility: isOwnMessage ? "hidden" : "initial" }}
-      />
+      <Tooltip title={message.sender.name}>
+        <Avatar
+          src={message.sender.avatarUrl}
+          sx={{ visibility: isOwnMessage ? "hidden" : "initial" }}
+        />
+      </Tooltip>
       <Box
         sx={{
           flexGrow: 1,
@@ -50,10 +52,12 @@ function MessageCard({ message }: MessagesListProps) {
           </Typography>
         </Box>
       </Box>
-      <Avatar
-        src={message.sender.avatarUrl}
-        sx={{ visibility: isOwnMessage ? "initial" : "hidden" }}
-      />
+      <Tooltip title={message.sender.name}>
+        <Avatar
+          src={message.sender.avatarUrl}
+          sx={{ visibility: isOwnMessage ? "initial" : "hidden" }}
+        />
+      </Tooltip>
     </ListItem>
   );
 }
