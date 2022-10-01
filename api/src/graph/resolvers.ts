@@ -26,7 +26,7 @@ export const resolvers = {
         },
       });
 
-      return profiles.filter((profile) => profile.id !== ctx.currentUser.id);
+      return profiles.filter((profile: any) => profile.id !== ctx.currentUser.id);
     },
     conversations: (_: any, __: any, ctx: Context) => {
       return ctx.prisma.conversation.findMany({

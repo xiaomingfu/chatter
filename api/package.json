@@ -7,7 +7,7 @@
     "seed": "ts-node prisma/seed.ts"
   },
   "scripts": {
-    "dev": "export NODE_ENV=development && export PORT=3333 && ts-node-dev ./src/index.ts",
+    "dev": "export NODE_ENV=development && export PORT=3333 && npx prisma generate && ts-node-dev ./src/index.ts",
     "build": "rm -fr ./dist && tsc -p ./src/tsconfig.json",
     "start": "export NODE_ENV=production && npm run build && ts-node dist/index.js"
   },
@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^7.5.0",
-    "@types/node": "^18.7.18",
+    "@types/node": "^18.7.23",
     "prisma": "^4.3.1"
   }
 }

@@ -13,7 +13,7 @@ export function tsToAgo(timestamp: string): string {
   const diffMonths = diffDays / 30;
   const diffYears = diffMonths / 12;
   if (diffSeconds < 60) {
-    return `${Math.floor(diffSeconds)} seconds ago`;
+    return `${Math.max(0, Math.floor(diffSeconds))} seconds ago`;
   }
   if (diffMinutes < 60) {
     return `${Math.floor(diffMinutes)} minutes ago`;

@@ -8,6 +8,12 @@ import { currentUserId } from "../auth";
 import { isBrowser } from "../utils/browser";
 import inMemoryCache from "./cache";
 
+const API_SERVER = "https://3333-xiaomingfu-chatter-nlqijb7fb0n.ws-us69.gitpod.io/graphql";
+const WS_SERVER = "wss://3333-xiaomingfu-chatter-nlqijb7fb0n.ws-us69.gitpod.io/graphql";
+
+// const API_SERVER = "http://localhost:3333/graphql";
+// const API_SERVER = "ws://localhost:3333/graphql";
+
 function createLink() {
   const authLink = setContext((_, { headers }) => {
     return {
@@ -20,7 +26,7 @@ function createLink() {
 
   const httpLink = authLink.concat(
     createHttpLink({
-      uri: "http://localhost:3333/graphql",
+      uri: API_SERVER
     })
   );
 
@@ -31,7 +37,7 @@ function createLink() {
 
   const wsLink = new GraphQLWsLink(
     createClient({
-      url: "ws://localhost:3333/graphql",
+      url: WS_SERVER,
       connectionParams: {
         token: currentUserId,
       },

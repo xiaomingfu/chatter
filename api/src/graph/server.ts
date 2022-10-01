@@ -11,6 +11,9 @@ import { useServer } from "graphql-ws/lib/use/ws";
 import { resolvers } from "./resolvers";
 import { typeDefs } from "./schema";
 
+// FIXME: fake current user
+const currentUserId = "cl8fi0scw0020gdjluxe0luch";
+
 export interface Context {
   prisma: PrismaClient;
   /**
@@ -30,7 +33,7 @@ const context = ({ req }: ExpressContext): Context => {
     prisma,
     pubsub,
     currentUser: {
-      id: convertToString(req.headers.token || "cl8fi0scw0020gdjluxe0luch"),
+      id: convertToString(req.headers.token || currentUserId),
     },
   };
 };
@@ -44,7 +47,7 @@ export function createApolloServer(httpServer: any, wsServer: any) {
         // ctx is the graphql-ws context
 
         const token =
-          ctx.connectionParams?.token || "cl8fi0scw0020gdjluxe0luch";
+          ctx.connectionParams?.token || currentUserId;
 
         return {
           prisma,

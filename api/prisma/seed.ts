@@ -3,9 +3,9 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-async function main() {
-  const users = await Promise.all(
-    Array.from({ length: 100 })
+async function createUsers(cnt: number) {
+  return await Promise.all(
+    Array.from({ length: cnt })
       .map(() => ({
         name: faker.name.fullName(),
         email: faker.internet.email(),
@@ -15,50 +15,59 @@ async function main() {
       }))
       .map((user) => prisma.user.create({ data: user }))
   );
+}
 
+const usedPairs = new Set<string>();
+async function createConv(u1: string, u2: string) {
+  const pair = [u1, u2].sort().join("-");
+
+  if (usedPairs.has(pair)) {
+    return null;
+  }
+
+  usedPairs.add(pair);
+
+  const conv = await prisma.conversation.create({
+    data: {
+      user1Id: u1,
+      user2Id: u2,
+    },
+  });
+
+  return conv;
+}
+
+async function main() {
+  const users = await createUsers(100);
   const currentUserId = users[6].id;
   console.log(currentUserId);
-
-  const usedPairs = new Set<string>();
 
   const conversations = await Promise.all(
     Array.from({ length: 10 })
       .map(() => {
         const user2 = randomArrayItem(users);
-
-        const pair = [currentUserId, user2.id].sort().join("-");
-
-        if (usedPairs.has(pair)) {
-          return null;
-        }
-
-        usedPairs.add(pair);
-
-        return prisma.conversation.create({
-          data: {
-            user1Id: currentUserId,
-            user2Id: user2.id,
-          },
-        });
+        return createConv(currentUserId, user2.id);
       })
       .filter(Boolean)
   );
 
   const messagePromises = Array.from({ length: 50 }).map(() => {
     const conversation = randomArrayItem(conversations);
-    const senderId = randomArrayItem([
-      conversation.user1Id,
-      conversation.user2Id,
-    ]);
-    const content = faker.lorem.paragraph(1);
-    return prisma.message.create({
-      data: {
-        content,
-        conversationId: conversation.id,
-        senderId,
-        createdAt: faker.date.past(),
-      },
-    });
+    if (conversation != null) {
+      const senderId = randomArrayItem([
+        conversation.user1Id,
+        conversation.user2Id,
+      ]);
+      const content = faker.lorem.paragraph(1);
+      return prisma.message.create({
+        data: {
+          content,
+          conversationId: conversation.id,
+          senderId,
+          createdAt: faker.date.past(),
+        },
+      });
+    }
   });
 
   const moreConvs = await Promise.all(
@@ -66,41 +75,30 @@ async function main() {
       .map(() => {
         const user1 = randomArrayItem(users);
         const user2 = randomArrayItem(users);
-
-        const pair = [user1.id, user2.id].sort().join("-");
-
-        if (usedPairs.has(pair)) {
-          return null;
-        }
-
-        usedPairs.add(pair);
-
-        return prisma.conversation.create({
-          data: {
-            user1Id: user1.id,
-            user2Id: user2.id,
-          },
-        });
+        return createConv(user1.id, user2.id);
       })
       .filter(Boolean)
   );
 
   Array.from({ length: 200 }).forEach(() => {
     const conversation = randomArrayItem(moreConvs);
-    const senderId = randomArrayItem([
-      conversation.user1Id,
-      conversation.user2Id,
-    ]);
-    const content = faker.lorem.paragraph();
-    messagePromises.push(
-      prisma.message.create({
-        data: {
-          content,
-          conversationId: conversation.id,
-          senderId,
-        },
-      })
-    );
+    if (conversation != null) {
+
+      const senderId = randomArrayItem([
+        conversation.user1Id,
+        conversation.user2Id,
+      ]);
+      const content = faker.lorem.paragraph();
+      messagePromises.push(
+        prisma.message.create({
+          data: {
+            content,
+            conversationId: conversation.id,
+            senderId,
+          },
+        })
+      );
+    }
   });
 
   await Promise.all(messagePromises);
@@ -113,7 +111,7 @@ main()
   .catch(async (e) => {
     console.error(e);
     await prisma.$disconnect();
-    process.exit(1);
+    return 1;
   });
 
 function randomRange(min: number, max: number) {

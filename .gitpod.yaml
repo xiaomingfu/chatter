@@ -1,0 +1,9 @@
+ports:
+  - name: app
+    description: app
+    port: 3000
+    onOpen: open-browser
+  - name: api
+    description: api
+    port: 3333
+    onOpen: open-browser

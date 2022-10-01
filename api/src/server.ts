@@ -8,7 +8,15 @@ function createExpressApp(): Application {
   const app: Application = express();
 
   app.get("/", (req: Request, res: Response) => {
-    res.send("api server");
+    const html = `
+      <main>
+        <h1>api server</h1>
+        <a href='/graphql'>
+          /graphql
+        </a>
+      </main>
+    `;
+    res.send(html);
   });
 
   return app;
