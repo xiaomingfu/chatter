@@ -10,6 +10,10 @@ function ConversationsList() {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
 
+  const conversations = [...(data?.conversations || [])].sort(
+    (a: any, b: any) => parseInt(b.updatedAt) - parseInt(a.updatedAt)
+  );
+
   return (
     <List
       sx={{
@@ -18,7 +22,7 @@ function ConversationsList() {
         overflowY: "scroll",
       }}
     >
-      {data?.conversations?.map((conversation: any, index: number) => (
+      {conversations.map((conversation: any, index: number) => (
         <React.Fragment key={conversation.id}>
           <ListItem disablePadding={true}>
             <ConversationCard conversation={conversation} />

@@ -33,6 +33,21 @@ const SEND_MESSAGE = gql`
   }
 `;
 
+export const SubscribeToMessageCreated = gql`
+  subscription Subscription($conversationId: String!) {
+    messageCreated(conversationId: $conversationId) {
+      id
+      content
+      createdAt
+      sender {
+        id
+        name
+        avatarUrl
+      }
+    }
+  }
+`;
+
 export function useMessages(conversationId: string) {
   const { data, loading, error } = useQuery(GET_MESSAGES, {
     variables: { conversationId },
@@ -82,16 +97,6 @@ export function useSendMessage() {
       },
     });
 }
-
-export const SubscribeToMessageCreated = gql`
-  subscription Subscription($conversationId: String!) {
-    messageCreated(conversationId: $conversationId) {
-      id
-      content
-      createdAt
-    }
-  }
-`;
 
 export function useMessageCreated(conversationId: string) {
   const { data, loading, error } = useSubscription(SubscribeToMessageCreated, {

@@ -1,12 +1,14 @@
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import {
   AppBar,
+  Avatar,
   Badge,
   Box,
   IconButton,
   InputBase,
   styled,
   Toolbar,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import React from "react";
@@ -49,6 +51,17 @@ function Navbar() {
                 <NotificationsIcon />
               </Badge>
             </IconButton>
+            <Tooltip title={data?.currentUser.name || ""}>
+              <IconButton
+                aria-label="show 16 new notifications"
+                color="inherit"
+              >
+                <Avatar
+                  src={data?.currentUser.avatarUrl}
+                  alt={data?.currentUser.name}
+                />
+              </IconButton>
+            </Tooltip>
           </Box>
         </Toolbar>
       </AppBar>

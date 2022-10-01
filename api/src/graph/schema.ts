@@ -5,7 +5,6 @@ export const typeDefs = gql`
     currentUser: User!
     allUserProfiles: [UserProfile!]!
     conversations: [Conversation!]!
-    conversation(id: String!): Conversation!
     messages(conversationId: String!): [Message!]!
   }
 
@@ -38,6 +37,7 @@ export const typeDefs = gql`
 
   type Conversation {
     id: String!
+    updatedAt: String!
     unreadCount: Int!
     otherUser: UserProfile!
     lastMessage: Message

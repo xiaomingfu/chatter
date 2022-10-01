@@ -45,13 +45,6 @@ export const resolvers = {
         },
       });
     },
-    conversation: (_: any, { id }: { id: string }, ctx: Context) => {
-      return ctx.prisma.conversation.findUnique({
-        where: {
-          id,
-        },
-      });
-    },
     messages: (
       _: any,
       { conversationId }: { conversationId: string },
@@ -119,6 +112,12 @@ export const resolvers = {
         throw new Error("Not authorized");
       }
 
+      const sender = await ctx.prisma.user.findUnique({
+        where: {
+          id: ctx.currentUser.id,
+        },
+      });
+
       const [updatedConv, message] = await ctx.prisma.$transaction([
         ctx.prisma.conversation.update({
           where: {
@@ -146,6 +145,7 @@ export const resolvers = {
       ctx.pubsub.publish(Events.MessageCreated, {
         messageCreated: {
           ...message,
+          sender,
           conversation: updatedConv,
         },
       });
