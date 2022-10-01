@@ -15,26 +15,6 @@ export const resolvers = {
         },
       });
     },
-    userProfile: async (
-      _: any,
-      { userId }: { userId: string },
-      ctx: Context
-    ) => {
-      const profile = await ctx.prisma.user.findUnique({
-        where: {
-          id: userId,
-        },
-        select: {
-          id: true,
-          name: true,
-          avatarUrl: true,
-          company: true,
-          title: true,
-        },
-      });
-
-      return profile;
-    },
     allUserProfiles: async (_: any, __: any, ctx: Context) => {
       const profiles = await ctx.prisma.user.findMany({
         select: {
@@ -193,20 +173,6 @@ export const resolvers = {
     },
   },
   User: {
-    conversations: (parent: any, _: any, { prisma }: Context) => {
-      return prisma.conversation.findMany({
-        where: {
-          OR: [
-            {
-              user1Id: parent.id,
-            },
-            {
-              user2Id: parent.id,
-            },
-          ],
-        },
-      });
-    },
     totalUnreadMessagesCnt: async (
       parent: any,
       _: any,
