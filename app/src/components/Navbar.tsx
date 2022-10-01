@@ -30,8 +30,12 @@ function Navbar() {
   const { data } = useCurrentUser();
 
   return (
-    <Box sx={{ width: "100%" }}>
-      <AppBar position="static" sx={{ height: "100%", boxShadow: "none" }}>
+    <Box
+      sx={{
+        width: "100%",
+      }}
+    >
+      <AppBar position="sticky" sx={{ boxShadow: "none" }}>
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Chatter
@@ -52,15 +56,10 @@ function Navbar() {
               </Badge>
             </IconButton>
             <Tooltip title={data?.currentUser.name || ""}>
-              <IconButton
-                aria-label="show 16 new notifications"
-                color="inherit"
-              >
-                <Avatar
-                  src={data?.currentUser.avatarUrl}
-                  alt={data?.currentUser.name}
-                />
-              </IconButton>
+              <Avatar
+                src={data?.currentUser.avatarUrl}
+                alt={data?.currentUser.name}
+              />
             </Tooltip>
           </Box>
         </Toolbar>

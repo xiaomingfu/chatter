@@ -18,11 +18,15 @@ function MessagesList({ conversationId }: MessagesListProps) {
     <List
       sx={{
         width: "100%",
-        height: "100%",
+        height: "calc(100vh - 220px)",
         overflowY: "scroll",
+        padding: 2,
+        scrollBehavior: "smooth",
+        display: "flex",
+        flexDirection: "column-reverse",
       }}
     >
-      {data.messages.map((message: any) => (
+      {[...data.messages].reverse().map((message: any) => (
         <MessageCard key={message.id} message={message} />
       ))}
     </List>

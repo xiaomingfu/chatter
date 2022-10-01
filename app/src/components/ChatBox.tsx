@@ -20,7 +20,7 @@ function ChatBox({ conversationId }: ChatBoxListProps) {
   };
 
   return (
-    <Stack gap={1}>
+    <Stack gap={1} padding={2}>
       <TextField
         multiline
         rows={2}

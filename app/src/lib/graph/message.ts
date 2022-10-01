@@ -87,6 +87,7 @@ export function useSendMessage() {
               if (conversation.id === conversationId) {
                 return {
                   ...conversation,
+                  updatedAt: sendMessage.createdAt,
                   lastMessage: sendMessage,
                 };
               }
