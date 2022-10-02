@@ -8,11 +8,15 @@ import { currentUserId } from "../auth";
 import { isBrowser } from "../utils/browser";
 import inMemoryCache from "./cache";
 
-const API_SERVER = "https://3333-xiaomingfu-chatter-nlqijb7fb0n.ws-us69.gitpod.io/graphql";
-const WS_SERVER = "wss://3333-xiaomingfu-chatter-nlqijb7fb0n.ws-us69.gitpod.io/graphql";
+const GITPOD_API_SERVER =
+  "https://3333-xiaomingfu-chatter-nlqijb7fb0n.ws-us69.gitpod.io/graphql";
+const GITPOD_WS_SERVER =
+  "wss://3333-xiaomingfu-chatter-nlqijb7fb0n.ws-us69.gitpod.io/graphql";
 
-// const API_SERVER = "http://localhost:3333/graphql";
-// const API_SERVER = "ws://localhost:3333/graphql";
+const LOCAL_API_SERVER = "http://localhost:3333/graphql";
+const LOCAL_WS_SERVER = "ws://localhost:3333/graphql";
+
+const isGitpod = window.location.hostname.includes("gitpod.io");
 
 function createLink() {
   const authLink = setContext((_, { headers }) => {
@@ -26,7 +30,7 @@ function createLink() {
 
   const httpLink = authLink.concat(
     createHttpLink({
-      uri: API_SERVER
+      uri: isGitpod ? GITPOD_API_SERVER : LOCAL_API_SERVER,
     })
   );
 
@@ -37,7 +41,7 @@ function createLink() {
 
   const wsLink = new GraphQLWsLink(
     createClient({
-      url: WS_SERVER,
+      url: isGitpod ? GITPOD_WS_SERVER : LOCAL_WS_SERVER,
       connectionParams: {
         token: currentUserId,
       },

@@ -8,7 +8,7 @@ interface MessagesListProps {
 }
 
 function MessagesList({ conversationId }: MessagesListProps) {
-  const { loading, error, data } = useMessages(conversationId);
+  const { error, data } = useMessages(conversationId);
   useMessageCreated(conversationId);
 
   return (
@@ -25,9 +25,12 @@ function MessagesList({ conversationId }: MessagesListProps) {
       }}
     >
       {error && <p>Error :(</p>}
-      {data && [...data.messages].reverse().map((message: any) => (
-        <MessageCard key={message.id} message={message} />
-      ))}
+      {data &&
+        [...data.messages]
+          .reverse()
+          .map((message: any) => (
+            <MessageCard key={message.id} message={message} />
+          ))}
     </List>
   );
 }
