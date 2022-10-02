@@ -15,7 +15,7 @@ import {
 import { useCurrentUser } from "../lib/graph/currentUser";
 import useSearchInput from "../lib/graph/local/searchInput";
 
-const SearchInput = styled(InputBase)(({ theme }: any) => ({
+const SearchInput = styled(InputBase)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
   borderRadius: theme.shape.borderRadius,
   padding: theme.spacing(1),

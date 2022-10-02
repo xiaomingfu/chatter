@@ -1,11 +1,12 @@
 import { Avatar, Badge, Box, ListItemButton, Typography } from "@mui/material";
 import { blue } from "@mui/material/colors";
 
+import { Conversation } from "../lib/graph/conversation";
 import useConversationId from "../lib/graph/local/conversationId";
 import { tsToAgo } from "../lib/utils/datetime";
 
 interface ConversationCardProps {
-  conversation: any;
+  conversation: Conversation;
 }
 
 function ConversationCard({ conversation }: ConversationCardProps) {

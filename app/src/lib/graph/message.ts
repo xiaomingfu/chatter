@@ -1,7 +1,31 @@
 import { gql, useMutation, useQuery, useSubscription } from "@apollo/client";
 
-import { GET_CONVERSATIONS } from "./conversation";
-import { GET_CURRENT_USER } from "./currentUser";
+import { Conversations, GET_CONVERSATIONS } from "./conversation";
+import { GET_CURRENT_USER, GetCurrentUser } from "./currentUser";
+
+export interface Sender {
+  id: string;
+  name: string;
+  avatarUrl?: string;
+}
+
+export interface Message {
+  id: string;
+  content: string;
+  createdAt: string;
+  sender: Sender;
+}
+
+export interface Messages {
+  messages: Message[];
+}
+export interface SendMessage {
+  sendMessage: Message;
+}
+
+export interface MessageCreated {
+  messageCreated: Message;
+}
 
 const GET_MESSAGES = gql`
   query GetMessages($conversationId: String!) {
@@ -49,7 +73,7 @@ export const SubscribeToMessageCreated = gql`
 `;
 
 export function useMessages(conversationId: string) {
-  const { data, loading, error } = useQuery(GET_MESSAGES, {
+  const { data, loading, error } = useQuery<Messages>(GET_MESSAGES, {
     variables: { conversationId },
   });
 
@@ -61,96 +85,121 @@ export function useMessages(conversationId: string) {
 }
 
 export function useSendMessage() {
-  const [sendMessage] = useMutation(SEND_MESSAGE);
+  const [sendMessage] = useMutation<SendMessage>(SEND_MESSAGE);
+
   return (conversationId: string, content: string) =>
     sendMessage({
       variables: { conversationId, content },
-      update(cache, { data: { sendMessage } }) {
-        const { messages } = cache.readQuery({
+      update(cache, { data }) {
+        if (!data) return;
+        const message = data.sendMessage;
+
+        // Update messages
+        const messagesData = cache.readQuery<Messages>({
           query: GET_MESSAGES,
           variables: { conversationId },
-        }) as any;
-        cache.writeQuery({
-          query: GET_MESSAGES,
-          variables: { conversationId },
-          data: { messages: messages.concat([sendMessage]) },
         });
+        if (messagesData) {
+          cache.writeQuery({
+            query: GET_MESSAGES,
+            variables: { conversationId },
+            data: { messages: messagesData.messages.concat([message]) },
+          });
+        }
 
-        const { conversations } = cache.readQuery({
+        // Update conversation
+        const conversationsData = cache.readQuery<Conversations>({
           query: GET_CONVERSATIONS,
-        }) as any;
-
-        cache.writeQuery({
-          query: GET_CONVERSATIONS,
-          data: {
-            conversations: conversations.map((conversation: any) => {
-              if (conversation.id === conversationId) {
-                return {
-                  ...conversation,
-                  updatedAt: sendMessage.createdAt,
-                  lastMessage: sendMessage,
-                };
-              }
-              return conversation;
-            }),
-          },
         });
+        if (conversationsData) {
+          cache.writeQuery({
+            query: GET_CONVERSATIONS,
+            data: {
+              conversations: conversationsData.conversations.map(
+                (conversation) => {
+                  if (conversation.id === conversationId) {
+                    return {
+                      ...conversation,
+                      updatedAt: message.createdAt,
+                      lastMessage: message,
+                    };
+                  }
+                  return conversation;
+                }
+              ),
+            },
+          });
+        }
       },
     });
 }
 
 export function useMessageCreated(conversationId: string) {
-  const { data, loading, error } = useSubscription(SubscribeToMessageCreated, {
-    variables: { conversationId },
-    onSubscriptionData: ({ client, subscriptionData }) => {
-      const { messageCreated } = subscriptionData.data;
+  const { data, loading, error } = useSubscription<MessageCreated>(
+    SubscribeToMessageCreated,
+    {
+      variables: { conversationId },
+      onSubscriptionData: ({ client, subscriptionData }) => {
+        const messageCreatedData = subscriptionData.data;
+        if (!messageCreatedData) return;
+        const messge = messageCreatedData.messageCreated;
 
-      const { currentUser } = client.readQuery({
-        query: GET_CURRENT_USER,
-      }) as any;
+        // Update total unread count
+        const currentUserData = client.readQuery<GetCurrentUser>({
+          query: GET_CURRENT_USER,
+        });
+        if (currentUserData) {
+          client.writeQuery({
+            query: GET_CURRENT_USER,
+            data: {
+              currentUser: {
+                ...currentUserData.currentUser,
+                totalUnreadMessagesCnt:
+                  currentUserData.currentUser.totalUnreadMessagesCnt + 1,
+              },
+            },
+          });
+        }
 
-      client.writeQuery({
-        query: GET_CURRENT_USER,
-        data: {
-          currentUser: {
-            ...currentUser,
-            totalUnreadMessagesCnt: currentUser.totalUnreadMessagesCnt + 1,
-          },
-        },
-      });
+        // Update messages
+        const messagesData = client.readQuery<Messages>({
+          query: GET_MESSAGES,
+          variables: { conversationId },
+        });
+        if (messagesData) {
+          client.writeQuery({
+            query: GET_MESSAGES,
+            variables: { conversationId },
+            data: { messages: messagesData.messages.concat([messge]) },
+          });
+        }
 
-      const { messages } = client.readQuery({
-        query: GET_MESSAGES,
-        variables: { conversationId },
-      }) as any;
-
-      client.writeQuery({
-        query: GET_MESSAGES,
-        variables: { conversationId },
-        data: { messages: messages.concat([messageCreated]) },
-      });
-
-      const { conversations } = client.readQuery({
-        query: GET_CONVERSATIONS,
-      }) as any;
-
-      client.writeQuery({
-        query: GET_CONVERSATIONS,
-        data: {
-          conversations: conversations.map((conversation: any) => {
-            if (conversation.id === conversationId) {
-              return {
-                ...conversation,
-                unreadCount: conversation.unreadCount + 1,
-                lastMessage: messageCreated,
-              };
-            }
-            return conversation;
-          }),
-        },
-      });
-    },
-  });
+        // Update conversation
+        const conversationsData = client.readQuery<Conversations>({
+          query: GET_CONVERSATIONS,
+        });
+        if (conversationsData) {
+          client.writeQuery({
+            query: GET_CONVERSATIONS,
+            data: {
+              conversations: conversationsData.conversations.map(
+                (conversation) => {
+                  if (conversation.id === conversationId) {
+                    return {
+                      ...conversation,
+                      unreadCount: conversation.unreadCount + 1,
+                      lastMessage: messge,
+                    };
+                  }
+                  return conversation;
+                }
+              ),
+            },
+          });
+        }
+      },
+    }
+  );
 
   return {
     data,

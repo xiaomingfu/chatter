@@ -28,9 +28,7 @@ function MessagesList({ conversationId }: MessagesListProps) {
       {data &&
         [...data.messages]
           .reverse()
-          .map((message: any) => (
-            <MessageCard key={message.id} message={message} />
-          ))}
+          .map((message) => <MessageCard key={message.id} message={message} />)}
     </List>
   );
 }

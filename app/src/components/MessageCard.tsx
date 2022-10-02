@@ -3,12 +3,13 @@ import { blue, grey } from "@mui/material/colors";
 import { Box } from "@mui/system";
 
 import { currentUserId } from "../lib/auth";
+import { Message } from "../lib/graph/message";
 
-interface MessagesListProps {
-  message: any;
+interface MessageCardProps {
+  message: Message;
 }
 
-function MessageCard({ message }: MessagesListProps) {
+function MessageCard({ message }: MessageCardProps) {
   const isOwnMessage = message.sender.id === currentUserId;
 
   return (

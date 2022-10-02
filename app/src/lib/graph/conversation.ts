@@ -1,5 +1,29 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 
+export interface Conversation {
+  id: string;
+  unreadCount: number;
+  updatedAt: string;
+  otherUser: {
+    id: string;
+    name: string;
+    avatarUrl?: string;
+  };
+  lastMessage?: {
+    id: string;
+    content: string;
+    createdAt: string;
+  };
+}
+
+export interface Conversations {
+  conversations: Conversation[];
+}
+
+export interface StartConversation {
+  startConversation: Conversation;
+}
+
 export const START_CONVERSATION = gql`
   mutation StartConversation($otherUserId: String!) {
     startConversation(otherUserId: $otherUserId) {
@@ -31,12 +55,13 @@ export const GET_CONVERSATIONS = gql`
 
 // Fix me: update cache or refetch query
 export function useStartConversation() {
-  const [startConversation] = useMutation(START_CONVERSATION);
+  const [startConversation] =
+    useMutation<StartConversation>(START_CONVERSATION);
   return startConversation;
 }
 
 export function useConversations() {
-  const { data, loading, error } = useQuery(GET_CONVERSATIONS);
+  const { data, loading, error } = useQuery<Conversations>(GET_CONVERSATIONS);
 
   return {
     data,
