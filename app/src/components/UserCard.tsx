@@ -38,6 +38,7 @@ function UserCard({ userId, avatar, name, email, job }: UserCardProps) {
   const useUserHandler = () => {
     localStorage.setItem("currentUserId", userId);
     setSearchInput("");
+    setConversationId("");
     window.location.reload();
   };
 

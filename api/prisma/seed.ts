@@ -71,7 +71,7 @@ async function main() {
   });
 
   const moreConvs = await Promise.all(
-    Array.from({ length: 10 })
+    Array.from({ length: 100 })
       .map(() => {
         const user1 = randomArrayItem(users);
         const user2 = randomArrayItem(users);
@@ -80,7 +80,7 @@ async function main() {
       .filter(Boolean)
   );
 
-  Array.from({ length: 200 }).forEach(() => {
+  Array.from({ length: 1000 }).forEach(() => {
     const conversation = randomArrayItem(moreConvs);
     if (conversation != null) {
 

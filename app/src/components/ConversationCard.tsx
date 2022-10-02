@@ -1,4 +1,5 @@
 import { Avatar, Badge, Box, ListItemButton, Typography } from "@mui/material";
+import { blue } from "@mui/material/colors";
 
 import useConversationId from "../lib/graph/local/conversationId";
 import { tsToAgo } from "../lib/utils/datetime";
@@ -23,10 +24,9 @@ function ConversationCard({ conversation }: ConversationCardProps) {
           gap: 2,
         },
         isSelected && {
-          color: "primary.contrastText",
-          bgcolor: "primary.main",
+          bgcolor: blue[100],
           ":hover": {
-            bgcolor: "primary.dark",
+            bgcolor: blue[200],
           },
         },
       ]}
