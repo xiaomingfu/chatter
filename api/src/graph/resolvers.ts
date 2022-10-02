@@ -8,10 +8,18 @@ enum Events {
 
 export const resolvers = {
   Query: {
-    currentUser: (_: any, __: any, ctx: GraphContext) => {
-      return ctx.prisma.user.findUnique({
+    currentUser: async (_: any, __: any, ctx: GraphContext) => {
+      return await ctx.prisma.user.findUnique({
         where: {
           id: ctx.currentUser.id,
+        },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          avatarUrl: true,
+          company: true,
+          title: true,
         },
       });
     },
@@ -26,7 +34,9 @@ export const resolvers = {
         },
       });
 
-      return profiles.filter((profile: any) => profile.id !== ctx.currentUser.id);
+      return profiles.filter(
+        (profile: any) => profile.id !== ctx.currentUser.id
+      );
     },
     conversations: (_: any, __: any, ctx: GraphContext) => {
       return ctx.prisma.conversation.findMany({

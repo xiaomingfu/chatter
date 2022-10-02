@@ -9,7 +9,7 @@ import { PubSub } from "graphql-subscriptions";
 import { useServer } from "graphql-ws/lib/use/ws";
 
 import { resolvers } from "./resolvers";
-import { typeDefs } from "./schema";
+import { schema as typeDefs } from "./schema";
 
 // FIXME: fake current user
 const currentUserId = "cl8fi0scw0020gdjluxe0luch";
@@ -48,7 +48,11 @@ export function createApolloServer(httpServer: any, wsServer: any) {
       schema,
       context: async (ctx, msg, args) => {
         // ctx is the graphql-ws context
-        return createContext(convertToString(ctx.connectionParams?.token as string || currentUserId));
+        return createContext(
+          convertToString(
+            (ctx.connectionParams?.token as string) || currentUserId
+          )
+        );
       },
     },
     wsServer

@@ -1,7 +1,19 @@
 import { gql, useQuery } from "@apollo/client";
 
-const GET_USER_PROFILES = gql`
-  query GetUserProfiles {
+export interface UserProfile {
+  id: string;
+  name: string;
+  avatarUrl?: string;
+  company?: string;
+  title?: string;
+}
+
+export interface AllUserProfiles {
+  allUserProfiles: UserProfile[];
+}
+
+const allUserProfilesQueryDocument = gql`
+  query UserProfiles {
     allUserProfiles {
       id
       name
@@ -13,7 +25,9 @@ const GET_USER_PROFILES = gql`
 `;
 
 export const useUserProfiles = () => {
-  const { data, loading, error } = useQuery(GET_USER_PROFILES);
+  const { data, loading, error } = useQuery<AllUserProfiles>(
+    allUserProfilesQueryDocument
+  );
 
   return {
     data,

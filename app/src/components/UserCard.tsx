@@ -10,23 +10,20 @@ import {
 import { useStartConversation } from "../lib/graph/conversation";
 import useConversationId from "../lib/graph/local/conversationId";
 import useSearchInput from "../lib/graph/local/searchInput";
+import { UserProfile } from "../lib/graph/profile";
 
 interface UserCardProps {
-  userId: string;
-  avatar: string;
-  name: string;
-  email: string;
-  job: string;
+  user: UserProfile;
 }
 
-function UserCard({ userId, avatar, name, email, job }: UserCardProps) {
+function UserCard({ user }: UserCardProps) {
   const startConversation = useStartConversation();
 
   const { setConversationId } = useConversationId();
   const { setSearchInput } = useSearchInput();
 
   const sendMessageHandler = () => {
-    startConversation({ variables: { otherUserId: userId } }).then((resp) => {
+    startConversation({ variables: { otherUserId: user.id } }).then((resp) => {
       const conversationId = resp.data?.startConversation?.id;
       if (conversationId) {
         setConversationId(conversationId);
@@ -36,7 +33,7 @@ function UserCard({ userId, avatar, name, email, job }: UserCardProps) {
   };
 
   const useUserHandler = () => {
-    localStorage.setItem("currentUserId", userId);
+    localStorage.setItem("currentUserId", user.id);
     setSearchInput("");
     setConversationId("");
     window.location.reload();
@@ -44,16 +41,18 @@ function UserCard({ userId, avatar, name, email, job }: UserCardProps) {
 
   return (
     <Card>
-      <CardMedia component="img" height="160" image={avatar} alt="avatar"
-      
-      
+      <CardMedia
+        component="img"
+        height="160"
+        image={`https://i.pravatar.cc/400?u=${user.id}`}
+        alt="avatar"
       />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
-          {name}
+          {user.name}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          {email} • {job}
+          {user.company} • {user.title}
         </Typography>
       </CardContent>
       <CardActions>
