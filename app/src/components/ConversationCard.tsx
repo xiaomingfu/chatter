@@ -1,5 +1,4 @@
 import { Avatar, Badge, Box, ListItemButton, Typography } from "@mui/material";
-import React from "react";
 
 import useConversationId from "../lib/graph/local/conversationId";
 import { tsToAgo } from "../lib/utils/datetime";
@@ -36,7 +35,7 @@ function ConversationCard({ conversation }: ConversationCardProps) {
       <Badge color="warning" badgeContent={unreadCount}>
         <Avatar
           variant="rounded"
-          src={otherUser.avatarUrl}
+          src={`https://i.pravatar.cc/150?u=${otherUser.id}`}
           alt={otherUser.name}
         />
       </Badge>

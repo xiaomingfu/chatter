@@ -1,7 +1,6 @@
 import { Avatar, ListItem, Tooltip, Typography } from "@mui/material";
 import { blue, grey } from "@mui/material/colors";
 import { Box } from "@mui/system";
-import React from "react";
 
 import { currentUserId } from "../lib/auth";
 
@@ -24,7 +23,7 @@ function MessageCard({ message }: MessagesListProps) {
     >
       <Tooltip title={message.sender.name}>
         <Avatar
-          src={message.sender.avatarUrl}
+          src={`https://i.pravatar.cc/150?u=${message.sender.id}`}
           sx={{ visibility: isOwnMessage ? "hidden" : "initial" }}
         />
       </Tooltip>
@@ -54,7 +53,7 @@ function MessageCard({ message }: MessagesListProps) {
       </Box>
       <Tooltip title={message.sender.name}>
         <Avatar
-          src={message.sender.avatarUrl}
+          src={`https://i.pravatar.cc/150?u=${message.sender.id}`}
           sx={{ visibility: isOwnMessage ? "initial" : "hidden" }}
         />
       </Tooltip>

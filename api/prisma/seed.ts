@@ -38,7 +38,7 @@ async function createConv(u1: string, u2: string) {
 }
 
 async function main() {
-  const users = await createUsers(100);
+  const users = await createUsers(20);
   const currentUserId = users[6].id;
   console.log(currentUserId);
 
@@ -51,7 +51,7 @@ async function main() {
       .filter(Boolean)
   );
 
-  const messagePromises = Array.from({ length: 50 }).map(() => {
+  const messagePromises = Array.from({ length: 100 }).map(() => {
     const conversation = randomArrayItem(conversations);
     if (conversation != null) {
       const senderId = randomArrayItem([
@@ -71,7 +71,7 @@ async function main() {
   });
 
   const moreConvs = await Promise.all(
-    Array.from({ length: 100 })
+    Array.from({ length: 10 })
       .map(() => {
         const user1 = randomArrayItem(users);
         const user2 = randomArrayItem(users);

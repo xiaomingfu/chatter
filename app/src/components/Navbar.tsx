@@ -11,7 +11,6 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import React from "react";
 
 import { useCurrentUser } from "../lib/graph/currentUser";
 import useSearchInput from "../lib/graph/local/searchInput";
@@ -57,7 +56,7 @@ function Navbar() {
             </IconButton>
             <Tooltip title={data?.currentUser.name || ""}>
               <Avatar
-                src={data?.currentUser.avatarUrl}
+                src={`https://i.pravatar.cc/150?u=${data?.currentUser.id}`}
                 alt={data?.currentUser.name}
               />
             </Tooltip>

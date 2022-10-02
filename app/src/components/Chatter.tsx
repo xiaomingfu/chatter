@@ -1,5 +1,4 @@
 import { Box, Grid, Paper } from "@mui/material";
-import React from "react";
 
 import ChatBox from "../components/ChatBox";
 import ConversationsList from "../components/ConversationsList";

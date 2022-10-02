@@ -6,7 +6,6 @@ import {
   CardMedia,
   Typography,
 } from "@mui/material";
-import React from "react";
 
 import { useStartConversation } from "../lib/graph/conversation";
 import useConversationId from "../lib/graph/local/conversationId";
@@ -44,7 +43,10 @@ function UserCard({ userId, avatar, name, email, job }: UserCardProps) {
 
   return (
     <Card>
-      <CardMedia component="img" height="160" image={avatar} alt="avatar" />
+      <CardMedia component="img" height="160" image={avatar} alt="avatar"
+      
+      
+      />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
           {name}

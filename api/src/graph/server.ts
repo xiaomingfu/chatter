@@ -14,7 +14,10 @@ import { typeDefs } from "./schema";
 // FIXME: fake current user
 const currentUserId = "cl8fi0scw0020gdjluxe0luch";
 
-export interface Context {
+/**
+ * Graph context
+ */
+export interface GraphContext {
   prisma: PrismaClient;
   /**
    * In memory pubsub that's only used for this server instance.
@@ -25,15 +28,15 @@ export interface Context {
   };
 }
 
-const prisma = new PrismaClient();
-const pubsub = new PubSub();
+const createContext = (token: string): GraphContext => {
+  const prisma = new PrismaClient();
+  const pubsub = new PubSub();
 
-const context = ({ req }: ExpressContext): Context => {
   return {
     prisma,
     pubsub,
     currentUser: {
-      id: convertToString(req.headers.token || currentUserId),
+      id: token,
     },
   };
 };
@@ -45,17 +48,7 @@ export function createApolloServer(httpServer: any, wsServer: any) {
       schema,
       context: async (ctx, msg, args) => {
         // ctx is the graphql-ws context
-
-        const token =
-          ctx.connectionParams?.token || currentUserId;
-
-        return {
-          prisma,
-          pubsub,
-          currentUser: {
-            id: convertToString(token as string | string[] | null | undefined),
-          },
-        };
+        return createContext(convertToString(ctx.connectionParams?.token as string || currentUserId));
       },
     },
     wsServer
@@ -65,7 +58,9 @@ export function createApolloServer(httpServer: any, wsServer: any) {
     typeDefs,
     resolvers,
     cache: "bounded",
-    context,
+    context: ({ req }: ExpressContext) => {
+      return createContext(convertToString(req.headers.token || currentUserId));
+    },
     plugins: [
       // Proper shutdown for the HTTP server.
       ApolloServerPluginDrainHttpServer({ httpServer }),

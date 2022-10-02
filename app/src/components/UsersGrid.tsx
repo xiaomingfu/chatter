@@ -1,5 +1,4 @@
 import { Grid } from "@mui/material";
-import React from "react";
 
 import useSearchInput from "../lib/graph/local/searchInput";
 import { useUserProfiles } from "../lib/graph/profile";
@@ -22,7 +21,7 @@ function UsersGrid() {
         <Grid item xs={6} sm={4} md={3} key={profile.id}>
           <UserCard
             userId={profile.id}
-            avatar={profile.avatarUrl}
+            avatar={`https://i.pravatar.cc/320?u=${profile.id}`}
             name={profile.name}
             email={profile.company}
             job={profile.title}

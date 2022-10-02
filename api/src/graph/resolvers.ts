@@ -1,6 +1,6 @@
 import { withFilter } from "graphql-subscriptions";
 
-import { Context } from "./server";
+import { GraphContext } from "./server";
 
 enum Events {
   MessageCreated = "MessageCreated",
@@ -8,14 +8,14 @@ enum Events {
 
 export const resolvers = {
   Query: {
-    currentUser: (_: any, __: any, ctx: Context) => {
+    currentUser: (_: any, __: any, ctx: GraphContext) => {
       return ctx.prisma.user.findUnique({
         where: {
           id: ctx.currentUser.id,
         },
       });
     },
-    allUserProfiles: async (_: any, __: any, ctx: Context) => {
+    allUserProfiles: async (_: any, __: any, ctx: GraphContext) => {
       const profiles = await ctx.prisma.user.findMany({
         select: {
           id: true,
@@ -28,7 +28,7 @@ export const resolvers = {
 
       return profiles.filter((profile: any) => profile.id !== ctx.currentUser.id);
     },
-    conversations: (_: any, __: any, ctx: Context) => {
+    conversations: (_: any, __: any, ctx: GraphContext) => {
       return ctx.prisma.conversation.findMany({
         where: {
           OR: [
@@ -48,7 +48,7 @@ export const resolvers = {
     messages: (
       _: any,
       { conversationId }: { conversationId: string },
-      ctx: Context
+      ctx: GraphContext
     ) => {
       return ctx.prisma.message.findMany({
         where: {
@@ -64,7 +64,7 @@ export const resolvers = {
     startConversation: async (
       _: any,
       { otherUserId }: { otherUserId: string },
-      ctx: Context
+      ctx: GraphContext
     ) => {
       try {
         return await ctx.prisma.conversation.create({
@@ -93,7 +93,7 @@ export const resolvers = {
     sendMessage: async (
       _: any,
       { content, conversationId }: { content: string; conversationId: string },
-      ctx: Context
+      ctx: GraphContext
     ) => {
       const conv = await ctx.prisma.conversation.findUnique({
         where: {
@@ -156,7 +156,7 @@ export const resolvers = {
   Subscription: {
     messageCreated: {
       subscribe: withFilter(
-        (_: any, __: any, ctx: Context) =>
+        (_: any, __: any, ctx: GraphContext) =>
           ctx.pubsub.asyncIterator(Events.MessageCreated),
         (payload, variables, wsCtx) => {
           const senderId = payload.messageCreated.senderId;
@@ -176,7 +176,7 @@ export const resolvers = {
     totalUnreadMessagesCnt: async (
       parent: any,
       _: any,
-      { prisma }: Context
+      { prisma }: GraphContext
     ) => {
       const v1 = await prisma.conversation.aggregate({
         _sum: {
@@ -201,12 +201,12 @@ export const resolvers = {
     },
   },
   Conversation: {
-    unreadCount: (parent: any, _: any, ctx: Context) => {
+    unreadCount: (parent: any, _: any, ctx: GraphContext) => {
       return ctx.currentUser.id === parent.user1Id
         ? parent.user1UnreadCount
         : parent.user2UnreadCount;
     },
-    otherUser: (parent: any, _: any, ctx: Context) => {
+    otherUser: (parent: any, _: any, ctx: GraphContext) => {
       return ctx.prisma.user.findUnique({
         where: {
           id:
@@ -221,7 +221,7 @@ export const resolvers = {
         },
       });
     },
-    lastMessage: (parent: any, _: any, ctx: Context) => {
+    lastMessage: (parent: any, _: any, ctx: GraphContext) => {
       return ctx.prisma.message.findFirst({
         where: {
           conversationId: parent.id,
@@ -233,14 +233,14 @@ export const resolvers = {
     },
   },
   Message: {
-    sender: (parent: any, _: any, { prisma }: Context) => {
+    sender: (parent: any, _: any, { prisma }: GraphContext) => {
       return prisma.user.findUnique({
         where: {
           id: parent.senderId,
         },
       });
     },
-    conversation: (parent: any, _: any, { prisma }: Context) => {
+    conversation: (parent: any, _: any, { prisma }: GraphContext) => {
       return prisma.conversation.findUnique({
         where: {
           id: parent.conversationId,
