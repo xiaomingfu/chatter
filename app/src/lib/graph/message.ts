@@ -14,6 +14,9 @@ export interface Message {
   content: string;
   createdAt: string;
   sender: Sender;
+  conversation?: {
+    id: string;
+  };
 }
 
 export interface Messages {
@@ -67,6 +70,9 @@ export const SubscribeToMessageCreated = gql`
         id
         name
         avatarUrl
+      }
+      conversation {
+        id
       }
     }
   }
@@ -162,16 +168,18 @@ export function useMessageCreated(conversationId: string) {
         }
 
         // Update messages
-        const messagesData = client.readQuery<Messages>({
-          query: GET_MESSAGES,
-          variables: { conversationId },
-        });
-        if (messagesData) {
-          client.writeQuery({
+        if (messge.conversation?.id === conversationId) {
+          const messagesData = client.readQuery<Messages>({
             query: GET_MESSAGES,
             variables: { conversationId },
-            data: { messages: messagesData.messages.concat([messge]) },
           });
+          if (messagesData) {
+            client.writeQuery({
+              query: GET_MESSAGES,
+              variables: { conversationId },
+              data: { messages: messagesData.messages.concat([messge]) },
+            });
+          }
         }
 
         // Update conversation
@@ -184,9 +192,10 @@ export function useMessageCreated(conversationId: string) {
             data: {
               conversations: conversationsData.conversations.map(
                 (conversation) => {
-                  if (conversation.id === conversationId) {
+                  if (conversation.id === messge.conversation?.id) {
                     return {
                       ...conversation,
+                      updatedAt: messge.createdAt,
                       unreadCount: conversation.unreadCount + 1,
                       lastMessage: messge,
                     };

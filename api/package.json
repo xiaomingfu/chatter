@@ -31,10 +31,10 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^7.5.0",
-    "@types/node": "^18.7.23",
-    "prisma": "^4.3.1",
+    "@graphql-codegen/cli": "2.13.1",
     "@graphql-codegen/typescript": "2.7.3",
     "@graphql-codegen/typescript-resolvers": "2.7.3",
-    "@graphql-codegen/cli": "2.13.1"
+    "@types/node": "^18.7.23",
+    "prisma": "^4.3.1"
   }
 }
