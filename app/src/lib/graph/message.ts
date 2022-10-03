@@ -58,7 +58,7 @@ const SEND_MESSAGE = gql`
 `;
 
 export const SubscribeToMessageCreated = gql`
-  subscription Subscription($conversationId: String!) {
+  subscription MessageCreated($conversationId: String!) {
     messageCreated(conversationId: $conversationId) {
       id
       content

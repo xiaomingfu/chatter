@@ -22,17 +22,13 @@ function createExpressApp(): Application {
   return app;
 }
 
-export function createWsServer(httpServer: any): any {
-  return new WebSocketServer({
-    server: httpServer,
-    path: "/graphql",
-  });
-}
-
 export async function startServer(port: string) {
   const app = createExpressApp();
   const httpServer = createServer(app);
-  const wsServer = createWsServer(httpServer);
+  const wsServer = new WebSocketServer({
+    server: httpServer,
+    path: "/graphql",
+  });
 
   const apolloServer = createApolloServer(httpServer, wsServer);
   await apolloServer.start();

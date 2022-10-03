@@ -20,7 +20,7 @@
     "skipLibCheck": true,
     "lib": ["es2015"]
   },
-  "include": ["./**/*.ts", "../codegen.ts"],
+  "include": ["./**/*.ts"],
   "exclude": ["../node_modules"],
   "ts-node": {
     "transpileOnly": true

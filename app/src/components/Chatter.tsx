@@ -4,9 +4,11 @@ import ChatBox from "../components/ChatBox";
 import ConversationsList from "../components/ConversationsList";
 import MessagesList from "../components/MessagesList";
 import useConversationId from "../lib/graph/local/conversationId";
+import { useMessageCreated } from "../lib/graph/message";
 
 const Chatter = () => {
   const { conversationId } = useConversationId();
+  useMessageCreated(conversationId);
 
   return (
     <Grid container>

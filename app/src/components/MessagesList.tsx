@@ -1,6 +1,6 @@
 import { List } from "@mui/material";
 
-import { useMessageCreated, useMessages } from "../lib/graph/message";
+import { useMessages } from "../lib/graph/message";
 import MessageCard from "./MessageCard";
 
 interface MessagesListProps {
@@ -9,7 +9,6 @@ interface MessagesListProps {
 
 function MessagesList({ conversationId }: MessagesListProps) {
   const { error, data } = useMessages(conversationId);
-  useMessageCreated(conversationId);
 
   return (
     <List

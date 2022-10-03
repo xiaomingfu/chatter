@@ -1,6 +1,6 @@
 import { gql } from "apollo-server-express";
 
-export const schema = gql`
+const schema = gql`
   type Query {
     currentUser: User!
     allUserProfiles: [UserProfile!]!
@@ -51,3 +51,5 @@ export const schema = gql`
     conversation: Conversation!
   }
 `;
+
+export default schema;
