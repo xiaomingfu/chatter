@@ -29,6 +29,17 @@ export const START_CONVERSATION = gql`
     startConversation(otherUserId: $otherUserId) {
       id
       unreadCount
+      updatedAt
+      otherUser {
+        id
+        name
+        avatarUrl
+      }
+      lastMessage {
+        id
+        content
+        createdAt
+      }
     }
   }
 `;
@@ -53,10 +64,31 @@ export const GET_CONVERSATIONS = gql`
   }
 `;
 
-// Fix me: update cache or refetch query
 export function useStartConversation() {
-  const [startConversation] =
-    useMutation<StartConversation>(START_CONVERSATION);
+  const [startConversation] = useMutation<StartConversation>(
+    START_CONVERSATION,
+    {
+      update(cache, { data }) {
+        const onversationsData = cache.readQuery<Conversations>({
+          query: GET_CONVERSATIONS,
+        });
+        if (data && onversationsData) {
+          cache.writeQuery({
+            query: GET_CONVERSATIONS,
+            data: {
+              conversations: [
+                data.startConversation,
+                ...onversationsData.conversations.filter(
+                  (conversation) =>
+                    conversation.id !== data.startConversation.id
+                ),
+              ],
+            },
+          });
+        }
+      },
+    }
+  );
   return startConversation;
 }
 

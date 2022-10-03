@@ -88,12 +88,16 @@ export const resolvers = {
         // Prisma Client error code: P2002
         // See https://www.prisma.io/docs/reference/api-reference/error-reference#p2002
         if (err?.code === "P2002") {
-          return ctx.prisma.conversation.findFirst({
+          const conv = await ctx.prisma.conversation.findFirst({
             where: {
               user1Id: ctx.currentUser.id,
               user2Id: otherUserId,
             },
           });
+          return {
+            ...conv,
+            updatedAt: Date.now(),
+          };
         }
 
         console.error(err);
