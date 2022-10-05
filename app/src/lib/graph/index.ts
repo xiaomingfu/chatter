@@ -8,7 +8,9 @@ import { currentUserId } from "../auth";
 import { isBrowser } from "../utils/browser";
 import inMemoryCache from "./cache";
 
+/* eslint-disable-next-line */
 const GITPOD_API_SERVER = `https://3333-${location.host.slice(5)}/graphql`;
+/* eslint-disable-next-line */
 const GITPOD_WS_SERVER = `wss://3333-${location.host.slice(5)}/graphql`;
 
 const LOCAL_API_SERVER = "http://localhost:3333/graphql";
