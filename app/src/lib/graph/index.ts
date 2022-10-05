@@ -8,10 +8,8 @@ import { currentUserId } from "../auth";
 import { isBrowser } from "../utils/browser";
 import inMemoryCache from "./cache";
 
-const GITPOD_API_SERVER =
-  "https://3333-xiaomingfu-chatter-nlqijb7fb0n.ws-us69.gitpod.io/graphql";
-const GITPOD_WS_SERVER =
-  "wss://3333-xiaomingfu-chatter-nlqijb7fb0n.ws-us69.gitpod.io/graphql";
+const GITPOD_API_SERVER = `https://3333-${location.host.slice(5)}/graphql`;
+const GITPOD_WS_SERVER = `wss://3333-${location.host.slice(5)}/graphql`;
 
 const LOCAL_API_SERVER = "http://localhost:3333/graphql";
 const LOCAL_WS_SERVER = "ws://localhost:3333/graphql";
