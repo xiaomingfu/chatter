@@ -1,3 +1,9 @@
 {
-  "recommendations": ["rbbit.typescript-hero"]
+  "recommendations": [
+    "rbbit.typescript-hero",
+    "github.copilot",
+    "graphql.vscode-graphql",
+    "prisma.prisma",
+    "GitHub.copilot"
+  ]
 }

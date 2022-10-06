@@ -11,6 +11,8 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
 import { useCurrentUser } from "../lib/graph/currentUser";
 import useSearchInput from "../lib/graph/local/searchInput";
@@ -27,6 +29,9 @@ const SearchInput = styled(InputBase)(({ theme }) => ({
 function Navbar() {
   const { searchInput, setSearchInput } = useSearchInput();
   const { data } = useCurrentUser();
+  const [pattern, setPattern] = useState('');
+
+  const onEnter = (e: any) => {};
 
   return (
     <Box
@@ -37,7 +42,7 @@ function Navbar() {
       <AppBar position="sticky" sx={{ boxShadow: "none" }}>
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Chatter
+            <Link to={'/'}>Chatter</Link>
           </Typography>
           <Box gap={2} sx={{ display: "flex" }}>
             <SearchInput
